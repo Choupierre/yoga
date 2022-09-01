@@ -26,14 +26,14 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        User::create([
+      /*   User::create([
             'password' => Hash::make('azerty'),
             'email' => 'raphaelle.leclerc@hotmail.com',
             'name' => 'Raphaelle Leclerc',
             'admin' => true,
-        ]);
+        ]); */
         User::create([
-            'password' => Hash::make('azerty'),
+            'password' => Hash::make('Azerty54'),
             'email' => 'pierre.cordier3@wanadoo.fr',
             'name' => 'Pierre Cordier',
             'admin' => true,
