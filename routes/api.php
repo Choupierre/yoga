@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DateController;
+use App\Http\Controllers\storeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-  
+    Route::get('/store', storeController::class);
     Route::apiResource('dates', DateController::class);
     Route::get('/dates/switch/{date}', [DateController::class,'switch']);
     Route::apiResource('users', UserController::class);

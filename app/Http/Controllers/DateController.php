@@ -16,15 +16,8 @@ class DateController extends Controller
      */
     public function index()
     {
-        return $this->allDates();
-    }
-
-    private function allDates()
-    {
-        $old = Date::selectRaw("*,true as old")->whereDate('date', '<', now()->toDateString())->orderBy('date', 'desc')->get();
-        $new = Date::selectRaw("*,false as old")->whereDate('date', '>=', now()->toDateString())->orderBy('date')->get();
-        return [...$new, ...$old];
-    }
+      
+    }   
 
     /**
      * Show the form for creating a new resource.
@@ -47,8 +40,7 @@ class DateController extends Controller
         Date::create([
             'date' => $request->date,
             'places' => array_fill(0, $request->places, null)
-        ]);
-        return $this->allDates();
+        ]);      
     }
 
     /**
@@ -76,7 +68,6 @@ class DateController extends Controller
 
         $date->places = $places;
         $date->save();
-        return $this->allDates();
     }
 
     /**
@@ -122,6 +113,5 @@ class DateController extends Controller
     public function destroy(Date $date)
     {
         $date->delete();
-        return $this->allDates();
     }
 }

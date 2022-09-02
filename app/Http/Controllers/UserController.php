@@ -19,13 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return $this->allUsers();
-    }
-
-    private function allUsers()
-    {
-        return User::where('active',true)->where('admin',false)->get();
-    }
+       
+    }  
 
     /**
      * Show the form for creating a new resource.
@@ -54,8 +49,7 @@ class UserController extends Controller
             'orchestra_id' => 1,
             'password' => Hash::make('dsfgdsfgsfgfdsg'),
         ]);
-        Mail::to($user)->send(new NewUserWelcomeMail($user));
-        return $this->allUsers();
+        Mail::to($user)->send(new NewUserWelcomeMail($user));   
     }
 
     /**
@@ -101,16 +95,14 @@ class UserController extends Controller
     public function destroy(User $user)
     {   
        
-        foreach (Date::whereDate('date','>',now()->toDateString())->get() as $date) {       
+         foreach (Date::whereDate('date','>',now()->toDateString())->get() as $date) {       
             $places = collect($date->places);
             $places->transform(function ($placedUser, $key) use ($user) {             
                 return ($placedUser && $placedUser['id'] === $user->id) ? null : $placedUser;
             });
             $date->places = $places;
             $date->save();
-        }             
-        $user->active=false;
-        $user->save();
-        return $this->allUsers();
+        }         
+        $user->delete();   
     }
 }
