@@ -18,7 +18,7 @@ class storeController extends Controller
     {
         $old = Date::selectRaw("*,true as old")->whereDate('date', '<', now()->toDateString())->orderBy('date', 'desc')->get();
         $new = Date::selectRaw("*,false as old")->whereDate('date', '>=', now()->toDateString())->orderBy('date')->get();
-        $users = User::where('active', true)->where('admin', false)->get();
+        $users = User::where('admin', false)->get();
         return ['dates' => [...$new, ...$old], 'users' => $users];
     }
 }
