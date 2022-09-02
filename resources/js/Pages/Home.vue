@@ -4,19 +4,19 @@ import { Head, Link } from "@inertiajs/inertia-vue3";
 import { getCurrentInstance, ref, reactive, watch, computed, onMounted } from "vue";
 
 onMounted(() => {
-   
+
     updateDates()
     updateUsers()
 });
 
-function updateDates(){
+function updateDates() {
     axios.get("/api/dates").then((res) => {
         places.value = res.data;
         console.log(res.data);
     });
 }
 
-function updateUsers(){
+function updateUsers() {
     axios.get("/api/users").then((res) => {
         users.value = res.data;
         console.log(res.data);
@@ -55,6 +55,7 @@ function addDate() {
 function addUser() {
     axios.post("/api/users", formUser).then((res) => {
         console.log(res);
+        users.value = res.data;
         formUsersuccess.value = "nouvel élève ajouté";
         formUser.name = "";
         formUser.email = "";
@@ -71,18 +72,22 @@ function addUser() {
 }
 
 function deleteDate(id) {
-    axios.delete("/api/dates/" + id).then((res) => {
-        places.value = res.data;
-        console.log(res);
-    });
+    if (window.confirm('voulez vous supprimer cette date?')) {
+        axios.delete("/api/dates/" + id).then((res) => {
+            places.value = res.data;
+            console.log(res);
+        });
+    }
 }
 
 function deleteUser(id) {
-    axios.delete("/api/users/" + id).then((res) => {
-        users.value = res.data;
-        console.log(res);
-        updateDates()
-    });
+    if (window.confirm('voulez vous supprimer cet élève?')) {
+        axios.delete("/api/users/" + id).then((res) => {
+            users.value = res.data;
+            console.log(res);
+            updateDates()
+        });
+    }
 }
 
 
@@ -157,45 +162,30 @@ function switchUser(id) {
                     }}</span> </div>
 
 
-
-                    <span id="badge-dismiss-green" class="inline-flex items-center py-1 px-2 mr-2 text-sm font-medium text-green-800 bg-green-100 rounded dark:bg-green-200 dark:text-green-800"
-                        v-for="user in users">
-                        {{ user.name }}
-                        <button type="button" @click="deleteUser(user.id)"
-                            class="inline-flex items-center p-0.5 ml-2 text-sm text-green-400 bg-transparent rounded-sm hover:bg-green-200 hover:text-green-900 dark:hover:bg-green-300 dark:hover:text-green-900"
-                            data-dismiss-target="#badge-dismiss-green" aria-label="Remove">
-                            <svg aria-hidden="true" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="sr-only">Remove badge</span>
-                        </button>
-                    </span>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    <div class="mt-4">
+                        <span id="badge-dismiss-green" class="inline-flex items-center py-1 px-2 mr-2 mb-2 text-sm font-medium text-green-800 bg-green-100 rounded dark:bg-green-200 dark:text-green-800"
+                            v-for="user in users">
+                            {{ user.name }}
+                            <button type="button" @click="deleteUser(user.id)"
+                                class="inline-flex items-center p-0.5 ml-2 text-sm text-green-400 bg-transparent rounded-sm hover:bg-green-200 hover:text-green-900 dark:hover:bg-green-300 dark:hover:text-green-900"
+                                data-dismiss-target="#badge-dismiss-green" aria-label="Remove">
+                                <svg aria-hidden="true" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="sr-only">Remove badge</span>
+                            </button>
+                        </span>
+                    </div>
 
 
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 m-4">
-                <div class="p-4 w-full bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700" v-for="(place, key) in places" :key="key">
+                <div :class="place.old ? 'bg-gray-200' : 'bg-white'" class="p-4 w-full rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700" v-for="(place, key) in places"
+                    :key="key">
                     <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">{{ place.date }} : {{ freeSeats(place) }} place(s) libre(s)</h5>
                     <!-- List -->
                     <ul role="list" class="my-7 space-y-5" v-for="(seat, key) in place.places" :key="key">
@@ -209,11 +199,13 @@ function switchUser(id) {
                             <span class="text-base font-normal leading-tight">{{ seat === null ? 'place libre' : seat.name }}</span>
                         </li>
                     </ul>
-                    <button type="button" @click="switchUser(place.id)" v-if="freeSeats(place) || alreadyPresent(place)"
-                        class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">{{
-                                alreadyPresent(place) ? "se retirer" : "réserver"
-                        }}</button>
-                    <button type="button" disabled v-else class="text-white bg-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">complet</button>
+                    <div v-if="!place.old">
+                        <button type="button" @click="switchUser(place.id)" v-if="freeSeats(place) || alreadyPresent(place)"
+                            class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">{{
+                                    alreadyPresent(place) ? "se retirer" : "réserver"
+                            }}</button>
+                        <button type="button" disabled v-else class="text-white bg-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">complet</button>
+                    </div>
                     <button type="button" @click="deleteDate(place.id)" v-if="$page.props.auth.user.admin"
                         class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-200 dark:focus:ring-red-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center mt-6">
                         supprimer</button>

@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Date;
 use App\Http\Requests\StoreDateRequest;
 use App\Http\Requests\UpdateDateRequest;
-use Carbon\Carbon;
-use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DateController extends Controller
@@ -17,8 +15,15 @@ class DateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {       
-        return Date::orderBy('date')->get();
+    {
+        return $this->allDates();
+    }
+
+    private function allDates()
+    {
+        $old = Date::selectRaw("*,true as old")->whereDate('date', '<', now()->toDateString())->orderBy('date', 'desc')->get();
+        $new = Date::selectRaw("*,false as old")->whereDate('date', '>=', now()->toDateString())->orderBy('date')->get();
+        return [...$new, ...$old];
     }
 
     /**
@@ -43,7 +48,7 @@ class DateController extends Controller
             'date' => $request->date,
             'places' => array_fill(0, $request->places, null)
         ]);
-        return Date::orderBy('date')->get();
+        return $this->allDates();
     }
 
     /**
@@ -71,7 +76,7 @@ class DateController extends Controller
 
         $date->places = $places;
         $date->save();
-        return Date::orderBy('date')->get();
+        return $this->allDates();
     }
 
     /**
@@ -117,6 +122,6 @@ class DateController extends Controller
     public function destroy(Date $date)
     {
         $date->delete();
-        return Date::orderBy('date')->get();
+        return $this->allDates();
     }
 }

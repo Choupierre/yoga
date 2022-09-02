@@ -19,7 +19,12 @@ class UserController extends Controller
      */
     public function index()
     {
-       return User::where('active',true)->where('admin',false)->get();
+        return $this->allUsers();
+    }
+
+    private function allUsers()
+    {
+        return User::where('active',true)->where('admin',false)->get();
     }
 
     /**
@@ -50,7 +55,7 @@ class UserController extends Controller
             'password' => Hash::make('dsfgdsfgsfgfdsg'),
         ]);
         Mail::to($user)->send(new NewUserWelcomeMail($user));
-        return $user;
+        return $this->allUsers();
     }
 
     /**
@@ -106,6 +111,6 @@ class UserController extends Controller
         }             
         $user->active=false;
         $user->save();
-        return User::where('active',true)->where('admin',false)->get();
+        return $this->allUsers();
     }
 }
