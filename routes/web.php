@@ -35,7 +35,7 @@ use Inertia\Inertia;
     ]);
 })->middleware(['auth', 'verified'])->name('home'); */
 
-Auth::loginUsingId(1);
+//Auth::loginUsingId(1);
 Route::get('/', function () {
 
 
