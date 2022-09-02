@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Mail\NewUserWelcomeMail;
+use App\Models\Date;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -18,7 +19,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+       return User::where('active',true)->where('admin',false)->get();
     }
 
     /**
@@ -93,7 +94,18 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(User $user)
-    {
-        //
+    {   
+       
+        foreach (Date::whereDate('date','>',now()->toDateString())->get() as $date) {       
+            $places = collect($date->places);
+            $places->transform(function ($placedUser, $key) use ($user) {             
+                return ($placedUser && $placedUser['id'] === $user->id) ? null : $placedUser;
+            });
+            $date->places = $places;
+            $date->save();
+        }             
+        $user->active=false;
+        $user->save();
+        return User::where('active',true)->where('admin',false)->get();
     }
 }
