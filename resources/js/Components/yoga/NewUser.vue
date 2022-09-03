@@ -1,21 +1,25 @@
 <script setup>
-import { ref } from "vue";
+import { ref,toRefs } from "vue";
 
 let formUser = { name: "", email: "" };
 let formUsersuccess = ref("");
 let formUserError = ref("");
 
-const props = defineProps(['users'])
-const emit = defineEmits(['update'])
+const props = defineProps({
+    'users': Array
+})
 
-console.log(props.users);
+const { users } = toRefs(props);
+
+
+const emit = defineEmits(['update'])
 
 function addUser() {
     axios.post("/api/users", formUser).then((res) => {
         console.log(res);
         formUsersuccess.value = "nouvel élève ajouté";
         formUser.name = "";
-        formUser.email = "";        
+        formUser.email = "";
         emit('update')
         setTimeout(() => {
             formUsersuccess.value = "";
@@ -63,9 +67,9 @@ function deleteUser(id) {
         <div class="p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert" v-if="formUserError"><span class="font-medium">{{
                 formUserError
         }}</span> </div>
-         <div class="mt-4" v-if="props.users">
+        <div class="mt-4">
             <span id="badge-dismiss-green" class="inline-flex items-center py-1 px-2 mr-2 mb-2 text-sm font-medium text-green-800 bg-green-100 rounded dark:bg-green-200 dark:text-green-800"
-                v-for="user in props.users">
+                v-for="user in users">
                 {{ user.name }}
                 <button type="button" @click="deleteUser(user.id)"
                     class="inline-flex items-center p-0.5 ml-2 text-sm text-green-400 bg-transparent rounded-sm hover:bg-green-200 hover:text-green-900 dark:hover:bg-green-300 dark:hover:text-green-900"

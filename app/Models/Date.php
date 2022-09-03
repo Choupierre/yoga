@@ -35,6 +35,6 @@ class Date extends Model
      */
     protected function serializeDate(DateTimeInterface $date)
     {   
-        return $date->translatedFormat('d F Y à H\hi');
+        return $date->translatedFormat('D d F Y à H\hi');
     }
 }

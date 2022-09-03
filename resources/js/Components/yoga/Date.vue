@@ -1,5 +1,13 @@
 <script setup>
-const props = defineProps(['date','user'])
+import { toRefs } from "vue";
+
+const props = defineProps({
+    'date': Object,
+    'user': Object
+})
+
+const { date, user } = toRefs(props);
+
 const emit = defineEmits(['update'])
 
 function deleteDate(id) {
@@ -10,25 +18,23 @@ function deleteDate(id) {
     }
 }
 
-const alreadyPresent = () =>
-    !!props.date.places.find((place) => place && place.id === props.user.id);
-const freeSeats = () =>
-props.date.places.reduce((prev, current) => prev + (current == null ? 1 : 0), 0);
+const alreadyPresent = () => !!date.value.places.find((place) => place && place.id === user.id);
+const freeSeats = () => date.value.places.reduce((prev, current) => prev + (current == null ? 1 : 0), 0);
 
 function switchUser() {
     console.log('ttt')
-    axios.get("/api/dates/switch/" + props.date.id).then((res) => {
+    axios.get("/api/dates/switch/" + date.value.id).then((res) => {
         emit('update')
     });
 }
 </script>
 
 <template>
-    <div :class="props.date.old ? 'bg-gray-200' : 'bg-white'" class="p-4 w-full rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-        <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">{{ props.date.date }} <br> {{ freeSeats() }} place(s) libre(s)</h5>
+    <div :class="date.old ? 'bg-gray-200' : 'bg-white'" class="p-4 w-full h-full rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 flex flex-col">
+        <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">{{ date.date }} <br> {{ freeSeats() }} place(s) libre(s)</h5>
         <!-- List -->
-        <ul role="list" class="my-7 space-y-2">
-            <li class="flex space-x-3" :class="seat === null ? 'text-gray-400 dark:text-gray-500' : 'text-blue-600 dark:text-blue-500'" v-for="(seat, key) in props.date.places" :key="key">
+        <ul role="list" class="my-7 space-y-2 grow">
+            <li class="flex space-x-3" :class="seat === null ? 'text-gray-400 dark:text-gray-500' : 'text-blue-600 dark:text-blue-500'" v-for="(seat, key) in date.places" :key="key">
                 <!-- Icon -->
                 <svg aria-hidden="true" class="flex-shrink-0 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <title>Check icon</title>
@@ -38,14 +44,14 @@ function switchUser() {
                 <span class="text-base font-normal leading-tight">{{ seat === null ? 'place libre' : seat.name }}</span>
             </li>
         </ul>
-        <div v-if="!props.date.old">
+        <div v-if="!date.old">
             <button type="button" @click="switchUser()" v-if="freeSeats() || alreadyPresent()"
                 class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">{{
                         alreadyPresent() ? "se retirer" : "réserver"
                 }}</button>
             <button type="button" disabled v-else class="text-white bg-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">complet</button>
         </div>
-        <button type="button" @click="deleteDate(props.date.id)" v-if="$page.props.auth.user.admin"
+        <button type="button" @click="deleteDate(date.id)" v-if="user.admin"
             class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-200 dark:focus:ring-red-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center mt-6">
             supprimer</button>
     </div>
