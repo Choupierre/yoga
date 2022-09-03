@@ -7,7 +7,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': path.resolve(__dirname,'resources/js'),
-            'Yoga': path.resolve(__dirname,'resources/js/Components/Yoga'),
+            'Yogas': path.resolve(__dirname,'resources/js/Components/Yoga'),
         },
     },
     plugins: [

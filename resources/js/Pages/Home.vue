@@ -1,8 +1,8 @@
 <script setup>
 import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
-import NewDate from "Yoga/NewDate.vue";
-import NewUser from "Yoga/NewUser.vue";
-import Date from "Yoga/Date.vue";
+import NewDate from "Yogas/NewDate.vue";
+import NewUser from "Yogas/NewUser.vue";
+import Date from "Yogas/Date.vue";
 import { Head } from "@inertiajs/inertia-vue3";
 import { ref, onMounted } from "vue";
 
