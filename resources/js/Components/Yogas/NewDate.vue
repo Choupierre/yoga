@@ -1,6 +1,5 @@
 <script setup>
-import { ref } from "vue";
-
+const store = authStore()
 let formDate = { date: undefined, places: 5 };
 let formDatesuccess = ref("");
 let formDateError = ref("");

@@ -16,11 +16,11 @@ class HomeController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $user=Auth::user();  
+       /*  $user=Auth::user();  
         if ($user && !$user->email_verified_at){
             $user->email_verified_at=now();
             $user->save();       
-        }  
+        }   */
         return Inertia::render('Home');
     }
 }
