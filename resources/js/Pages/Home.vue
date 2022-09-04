@@ -12,7 +12,7 @@ onMounted(() => {
 
 function update() {
     axios.get("/api/store").then((res) => {
-        console.log('update')
+        console.log('update',res.data)
         dates.value = res.data.dates;
         users.value = res.data.users;
     });

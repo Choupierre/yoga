@@ -1,10 +1,8 @@
 <?php
 
-use App\Models\Date;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,31 +15,8 @@ use Inertia\Inertia;
 |
 */
 
-/* Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-}); */
+//Auth::loginUsingId(2);
 
-/* Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-})->middleware(['auth', 'verified'])->name('home'); */
-
-//Auth::loginUsingId(1);
-Route::get('/', function () {
-
-
-
-
-    return Inertia::render('Home');
-})->middleware(['auth'])->name('home');
+Route::get('/', HomeController::class)->middleware(['auth'])->name('home');
 
 require __DIR__ . '/auth.php';
