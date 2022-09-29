@@ -41,7 +41,8 @@ function addDate() {
       <input type="datetime-local" id="date" v-model="formDate.date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@flowbite.com" required />
     </div>
     <div class="mb-6">
-      <label for="number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">nombre de participants : </label>
+       <label for="number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300" v-if="store.appName==='Insa'">nombre de demi-heures (13h à 17h = 8 demi-heures) : </label>
+      <label for="number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300" v-else>nombre de participants : </label>
       <input type="number" id="number" v-model="formDate.places" min="1" max="10" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
     </div>
     <button type="submit" @click="addDate" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">Ajouter</button>

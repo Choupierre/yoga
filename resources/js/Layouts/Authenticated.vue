@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+const store = authStore();
 import BreezeApplicationLogo from '@/Components/ApplicationLogo.vue';
 import BreezeDropdown from '@/Components/Dropdown.vue';
 import BreezeDropdownLink from '@/Components/DropdownLink.vue';
@@ -8,7 +9,6 @@ import BreezeResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/inertia-vue3';
 
 const showingNavigationDropdown = ref(false);
-const appName = import.meta.env.VITE_APP_NAME
 </script>
 
 <template>
@@ -22,7 +22,7 @@ const appName = import.meta.env.VITE_APP_NAME
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('home')">
-                                     {{ appName }}
+                                     {{ store.appName }}
                                 </Link>
                             </div>                          
                         </div>

@@ -24,5 +24,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/store', StoreController::class);
     Route::apiResource('dates', DateController::class);
     Route::get('/dates/switch/{date}', [DateController::class,'switch']);
+    Route::post('/dates/switch/{date}', [DateController::class,'switch2']);
     Route::apiResource('users', UserController::class);
 });

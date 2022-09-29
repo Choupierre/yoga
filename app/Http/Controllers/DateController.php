@@ -16,8 +16,7 @@ class DateController extends Controller
      */
     public function index()
     {
-      
-    }   
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -41,7 +40,7 @@ class DateController extends Controller
             'user_id' => Auth::id(),
             'date' => $request->date,
             'places' => array_fill(0, $request->places, null)
-        ]);      
+        ]);
     }
 
     /**
@@ -66,6 +65,26 @@ class DateController extends Controller
                 $places->splice($free, 1, [Auth::user()]);
             }
         }
+
+        $date->places = $places;
+        $date->save();
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function switch2(Date $date)
+    {
+        $places = collect($date->places);
+
+        if ($places[request()->key] && $places[request()->key]['id'] == Auth::id())
+            $places[request()->key] = null;
+        elseif ($places[request()->key] === null)
+            $places[request()->key] = Auth::user();
+
 
         $date->places = $places;
         $date->save();
