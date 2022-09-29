@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NewUserWelcomeMail extends Mailable
+class NewInsaUserWelcomeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -29,9 +29,9 @@ class NewUserWelcomeMail extends Mailable
      * @return $this
      */
     public function build()
-    {
+    {       
         return $this
-            ->subject('Bienvenue aux cours de yoga.')
-            ->markdown('emails.user.new');
+            ->subject('Bienvenue aux cours de l\'Insa.')
+            ->markdown('emails.user.newinsa');
     }
 }

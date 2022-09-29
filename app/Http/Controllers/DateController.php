@@ -38,6 +38,7 @@ class DateController extends Controller
     public function store(StoreDateRequest $request)
     {
         Date::create([
+            'user_id' => Auth::id(),
             'date' => $request->date,
             'places' => array_fill(0, $request->places, null)
         ]);      

@@ -8,6 +8,8 @@ const { date } = toRefs(props);
 
 const emit = defineEmits(['update'])
 
+const displayTeacherName = import.meta.env.VITE_DISPLAY_TEACHER_NAME=="true"
+
 const alreadyReserved = () => !!date.value.places.find((place) => place && place.id === store.id);
 const freeSeats = () => date.value.places.reduce((prev, current) => prev + (current == null ? 1 : 0), 0);
 
@@ -29,7 +31,9 @@ function switchReservation() {
 
 <template>
     <div :class="date.old ? 'bg-gray-200' : 'bg-white'" class="p-4 w-full h-full rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 flex flex-col">
-        <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">{{ date.date }} <br> {{ freeSeats() }} place(s) libre(s)</h5>
+        <h5 class="text-xl font-medium text-gray-500 dark:text-gray-400" v-if="displayTeacherName">{{ date.user.name }}</h5>
+        <h5 class="text-xl font-medium text-gray-500 dark:text-gray-400">{{ date.date }}</h5>
+        <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">{{ freeSeats() }} place(s) libre(s)</h5>
         <!-- List -->
         <ul role="list" class="my-7 space-y-2 grow">
             <li class="flex space-x-3" :class="seat === null ? 'text-gray-400 dark:text-gray-500' : 'text-blue-600 dark:text-blue-500'" v-for="(seat, key) in date.places" :key="key">

@@ -37,4 +37,9 @@ class Date extends Model
     {   
         return $date->translatedFormat('D d F Y à H\hi');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -8,7 +8,7 @@ import { Head } from "@inertiajs/inertia-vue3";
 const store = authStore()
 
 onMounted(() => {
-    update()   
+    update()  
 });
 
 function update() {
@@ -22,9 +22,7 @@ function update() {
 
 </script>
 
-<template>
-
-    <Head title="Yoga" />
+<template>  
     <BreezeAuthenticatedLayout>
         <div class="container mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 m-4" v-if="store.isAdmin">

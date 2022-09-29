@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Mail\NewUserWelcomeMail;
+use App\Mail\NewInsaUserWelcomeMail;
+use App\Mail\NewYogaUserWelcomeMail;
 use App\Models\Date;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -19,8 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-       
-    }  
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -49,7 +49,10 @@ class UserController extends Controller
             'orchestra_id' => 1,
             'password' => Hash::make('dsfgdsfgsfgfdsg'),
         ]);
-        Mail::to($user)->send(new NewUserWelcomeMail($user));   
+        if (config('app.name') === "Yoga")
+            Mail::to($user)->send(new NewYogaUserWelcomeMail($user));
+        if (config('app.name') === "Insa")
+            Mail::to($user)->send(new NewInsaUserWelcomeMail($user));
     }
 
     /**
@@ -93,16 +96,16 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(User $user)
-    {   
-       
-         foreach (Date::whereDate('date','>',now()->toDateString())->get() as $date) {       
+    {
+
+        foreach (Date::whereDate('date', '>', now()->toDateString())->get() as $date) {
             $places = collect($date->places);
-            $places->transform(function ($placedUser, $key) use ($user) {             
+            $places->transform(function ($placedUser, $key) use ($user) {
                 return ($placedUser && $placedUser['id'] === $user->id) ? null : $placedUser;
             });
             $date->places = $places;
             $date->save();
-        }         
-        $user->delete();   
+        }
+        $user->delete();
     }
 }
