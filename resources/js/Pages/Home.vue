@@ -24,7 +24,7 @@ function update() {
 
 <template>  
     <BreezeAuthenticatedLayout>
-        <div class="container mx-auto">
+        <div class="container mx-auto">       
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 m-4" v-if="store.isAdmin">
                 <NewDate @update="update" />
                 <NewUser @update="update" />

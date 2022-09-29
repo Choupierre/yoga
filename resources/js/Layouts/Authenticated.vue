@@ -8,6 +8,7 @@ import BreezeResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/inertia-vue3';
 
 const showingNavigationDropdown = ref(false);
+const appName = import.meta.env.VITE_APP_NAME
 </script>
 
 <template>
@@ -21,7 +22,7 @@ const showingNavigationDropdown = ref(false);
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('home')">
-                                    Yoga
+                                     {{ appName }}
                                 </Link>
                             </div>                          
                         </div>
