@@ -17,7 +17,7 @@ function hour(date, key) {
   let coef = minutes + 30 >= 60 ? 1 : 0;
   hours = hours + Math.floor((key + coef) / 2);
   minutes = (minutes + 30 * key) % 60;
-  minutes = minutes === 0 ? '00' : minutes
+  minutes = minutes === 0 ? "00" : minutes;
   return hours + "h" + minutes;
 }
 
@@ -30,6 +30,7 @@ function deleteDate(id) {
 }
 
 function switchReservation(key) {
+  if (!date.value.old)
   axios.post("/api/dates/switch/" + date.value.id, { key }).then((res) => {
     emit("update");
   });
@@ -39,10 +40,11 @@ function switchReservation(key) {
 <template>
   <div :class="date.old ? 'bg-gray-200' : 'bg-white'" class="p-4 w-full h-full rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 flex flex-col">
     <h5 class="text-xl font-medium text-gray-500 dark:text-gray-400">{{ date.user.name }}</h5>
-    <h5 class="text-xl font-medium text-gray-500 dark:text-gray-400">{{ date.date }}</h5>   
+    <h5 class="text-xl font-medium text-gray-500 dark:text-gray-400">{{ date.date }}</h5>
     <!-- List -->
     <ul role="list" class="my-7 space-y-2 grow">
-      <li class="flex space-x-3 hover:cursor-pointer hover:bg-red-100" :class="seat === null ? 'text-gray-400 dark:text-gray-500' : 'text-blue-600 dark:text-blue-500'" v-for="(seat, key) in date.places" :key="key" @click="switchReservation(key)">
+    
+      <li class="flex space-x-3" :class="[seat === null ? 'text-gray-400 dark:text-gray-500' : 'text-blue-600 dark:text-blue-500',(seat && seat.id!==store.user.id) || date.old ? '': 'hover:cursor-pointer hover:bg-red-100']" v-for="(seat, key) in date.places" :key="key" @click="switchReservation(key)"> 
         <!-- Icon -->
         <svg aria-hidden="true" class="flex-shrink-0 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
           <title>Check icon</title>
