@@ -9,7 +9,7 @@ function update() {
   axios.get("/api/store").then((res) => {
     store.dates = res.data.dates;
     store.users = res.data.users;
-    store.user = res.data.auth; 
+    store.user = res.data.auth;  
   });
 }
 </script>

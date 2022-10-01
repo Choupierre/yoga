@@ -72,7 +72,7 @@ function switchReservation(key?:number) {
         {{ alreadyReserved() ? "Annuler" : "Réserver" }}
       </button>
       <button
-        v-else
+        v-if="!freeSeats() && !alreadyReserved()"
         type="button"
         disabled
         class="text-white bg-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center"
