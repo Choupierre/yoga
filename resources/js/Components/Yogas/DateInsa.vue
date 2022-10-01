@@ -42,8 +42,28 @@ function switchReservation(key:number) {
 <template>
   <div
     :class="date.old ? 'bg-gray-200' : 'bg-white'"
-    class="p-4 w-full h-full rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 flex flex-col"
+    class="relative p-4 w-full h-full rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 flex flex-col items-start"
   >
+    <button
+      v-if="store.isAdmin"
+      type="button"
+      class="absolute buttonred -top-2 -right-2"
+      @click="deleteDate(date.id)"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      ><path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"
+      /></svg>
+      <span class="sr-only">Supprimer</span>
+    </button>
     <h5 class="text-xl font-medium text-gray-500 dark:text-gray-400">
       {{ date.user.name }}
     </h5>
@@ -53,7 +73,7 @@ function switchReservation(key:number) {
     <!-- List -->
     <ul
       role="list"
-      class="my-7 space-y-2 grow"
+      class="mt-5 space-y-2 grow"
     >
       <li
         v-for="(seat, key) in date.places"
@@ -79,14 +99,6 @@ function switchReservation(key:number) {
         </svg>
         <span class="text-base font-normal leading-tight">{{ hour(date.date, key) }} - {{ seat === null ? "place libre" : seat.name }}</span>
       </li>
-    </ul>
-    <button
-      v-if="store.isAdmin"
-      type="button"
-      class="buttonred"
-      @click="deleteDate(date.id)"
-    >
-      supprimer
-    </button>
+    </ul>    
   </div>
 </template>

@@ -29,7 +29,7 @@
         "./*.ts", 
         "./resources/**/*.ts",
         "./resources/**/*.tsx",
-        "./resources/**/*.vue", "resources/js/app.js",
+        "./resources/**/*.vue", "resources/js/app.ts",
     ],
     "exclude": [
         "node_modules"
