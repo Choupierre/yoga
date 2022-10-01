@@ -1,38 +1,14 @@
 <script setup lang="ts">
+import { PropType } from "vue";
+import { DateElement } from "../../types";
 const store = authStore();
-
 const props = defineProps({
-  date: {
-    type: Object,
-    required: true,
-  },
+    date: {
+        type: Object as PropType<DateElement>,
+        required: true,
+    },
 });
 const { date } = toRefs(props);
-
-const emit = defineEmits(["update"]);
-
-const alreadyReserved = () =>
-  !!date.value.places.find((place:{id:number}) => place && place.id === store.id);
-  
-const freeSeats = () =>
-  date.value.places.reduce(
-    (prev:number, current:null|object) => prev + (current == null ? 1 : 0),
-    0
-  );
-
-function deleteDate(id:number) {
-  if (window.confirm("voulez vous supprimer cette date?")) {
-    axios.delete("/api/dates/" + id).then(() => {
-      emit("update");
-    });
-  }
-}
-
-function switchReservation(key?:number) {
-  axios.post("/api/dates/switch/" + date.value.id, { key }).then(() => {
-    emit("update");
-  });
-}
 </script>
 
 <template>
@@ -43,7 +19,7 @@ function switchReservation(key?:number) {
     <BtnDelete
       v-if="store.isAdmin"    
       class="absolute -top-2 -right-2"
-      @click="deleteDate(date.id)"
+      @click="date.deleteDate()"
     />  
     <h5     
       v-if="store.isInsa"
@@ -55,24 +31,24 @@ function switchReservation(key?:number) {
       {{ date.date }}
     </h5>
     <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
-      {{ freeSeats() }} place(s) libre(s)
+      {{ date.freeSeats() }} place(s) libre(s)
     </h5>
     <!-- List -->
     <DateSlots
       :date="date"
-      @update="emit('update')"
+      @update="store.init()"
     />
     <div v-if="!date.old && !store.isInsa">
       <button
-        v-if="(freeSeats() || alreadyReserved()) && !store.isAdmin"
+        v-if="(date.freeSeats() || date.alreadyReserved()) && !store.isAdmin"
         type="button"
         class="buttonblue"
-        @click="switchReservation()"
+        @click="date.switchReservation()"
       >
-        {{ alreadyReserved() ? "Annuler" : "Réserver" }}
+        {{ date.alreadyReserved() ? "Annuler" : "Réserver" }}
       </button>
       <button
-        v-if="!freeSeats() && !alreadyReserved()"
+        v-if="!date.freeSeats() && !date.alreadyReserved()"
         type="button"
         disabled
         class="text-white bg-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center"

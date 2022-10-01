@@ -1,41 +1,40 @@
 <script setup lang="ts">
 const store = authStore();
-
 const formDate = {
-  date: undefined,
-  places:  store.defaultPlaces 
+    date: undefined,
+    places: store.defaultPlaces,
 };
-
 const formDatesuccess = ref("");
 const formDateError = ref("");
 
-const emit = defineEmits(["update"]);
-
 function addDate() {
-  axios
-    .post("/api/dates", formDate)
-    .then(() => {
-      formDatesuccess.value = "nouvelle date ajoutée";
-      formDate.date = undefined;
-      emit("update");
-      setTimeout(() => {
-        formDatesuccess.value = "";
-      }, 3000);
-    })
-    .catch((err) => {
-      console.log(err.response);
-      formDateError.value = err.response.data.message;
-      setTimeout(() => {
-        formDateError.value = "";
-      }, 3000);
-    });
+    axios
+        .post("/api/dates", formDate)
+        .then(() => {
+            formDatesuccess.value = "nouvelle date ajoutée";
+            formDate.date = undefined;
+            store.init();
+            setTimeout(() => {
+                formDatesuccess.value = "";
+            }, 3000);
+        })
+        .catch((err) => {
+            console.log(err.response);
+            formDateError.value = err.response.data.message;
+            setTimeout(() => {
+                formDateError.value = "";
+            }, 3000);
+        });
 }
-
 </script>
 
 <template>
-  <div class="p-6 bg-slate-200 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+  <div
+    class="p-6 bg-slate-200 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+  >
+    <h5
+      class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+    >
       Ajouter une date
     </h5>
     <div class="mb-6">
@@ -46,8 +45,8 @@ function addDate() {
       <input
         id="date"
         v-model="formDate.date"
-        type="datetime-local"   
-        class="input1"  
+        type="datetime-local"
+        class="input1"
         placeholder="name@flowbite.com"
         required
       >
@@ -57,12 +56,14 @@ function addDate() {
         v-if="store.isInsa"
         for="number"
         class="label1"
-      >Nombre de demi-heures (13h à 17h = 8 demi-heures) : </label>
+      >Nombre de demi-heures (13h à 17h = 8 demi-heures) :
+      </label>
       <label
         v-else
         for="number"
         class="label1"
-      >nombre de participants : </label>
+      >nombre de participants :
+      </label>
       <input
         id="number"
         v-model="formDate.places"
@@ -70,7 +71,7 @@ function addDate() {
         class="input1"
         min="1"
         max="10"
-       required
+        required
       >
     </div>
     <button

@@ -26,7 +26,7 @@ export default defineConfig({
 
         }),
         AutoImport({
-            imports: ['vue', 'pinia',
+            imports: ['vue', 'pinia',            
                 {
                     'axios': [['default', 'axios'],]
                 },

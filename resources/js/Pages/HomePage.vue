@@ -1,17 +1,8 @@
 <script setup lang="ts">  
 const store = authStore();
-
 onMounted(() => {
-  update();
+  store.init()
 });
-
-function update() {
-  axios.get("/api/store").then((res) => {
-    store.dates = res.data.dates;
-    store.users = res.data.users;
-    store.user = res.data.auth;  
-  });
-}
 </script>
 
 <template>
@@ -21,8 +12,8 @@ function update() {
         v-if="store.isAdmin"
         class="grid grid-cols-1 md:grid-cols-2 gap-4 m-4"
       >
-        <NewDate @update="update" />
-        <NewUser @update="update" />
+        <NewDate />
+        <NewUser />
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 m-4">
         <div
@@ -30,8 +21,7 @@ function update() {
           :key="key"
         >
           <TheDate          
-            :date="date"
-            @update="update"
+            :date="date"            
           />         
         </div>
       </div>

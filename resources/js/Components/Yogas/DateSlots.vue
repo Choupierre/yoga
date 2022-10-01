@@ -1,53 +1,23 @@
 <script setup lang="ts">
+import { PropType } from "vue";
+import { DateElement, User } from "../../types";
 const store = authStore();
-
 const props = defineProps({
     date: {
-        type: Object,
+        type: Object as PropType<DateElement>,
         required: true,
     },
 });
-
 const { date } = toRefs(props);
 
-const emit = defineEmits(["update"]);
-
-function hour(date: string, key: number) {
-    let hours = parseInt(date.slice(-5, -3));
-    let minutes: number | string = parseInt(date.slice(-2));
-    const coef = minutes + 30 >= 60 ? 1 : 0;
-    hours = hours + Math.floor((key + coef) / 2);
-    minutes = (minutes + 30 * key) % 60;
-    minutes = minutes === 0 ? "00" : minutes;
-    return hours + "h" + minutes;
-}
-
-function switchReservation(key?: number) {
-    axios.post("/api/dates/switch/" + date.value.id, { key }).then(() => {
-        emit("update");
-    });
-}
-
-function deleteReservation(key: number) {
-    axios.put("/api/dates/" + date.value.id, { key }).then(() => {
-        emit("update");
-    });
-}
-
-function canReserveSeat(seat: { id: number }) {
-    if (store.isAdmin) return false;
-    if (seat && seat.id !== store.user.id) return false;
-    return store.isInsa && !date.value.old;
-}
-
-function liClass(seat: { id: number }): Array<string> {
+function liClass(place: User | null): Array<string> {
     const classArray = [];
     classArray.push(
-        seat === null
+        place === null
             ? "text-gray-400 dark:text-gray-500"
             : "text-blue-600 dark:text-blue-500"
     );
-    if (canReserveSeat(seat))
+    if (date.value.canReserveSeat(place))
         classArray.push("hover:cursor-pointer hover:bg-blue-100");
     return classArray;
 }
@@ -59,11 +29,13 @@ function liClass(seat: { id: number }): Array<string> {
     class="my-7 space-y-2 grow"
   >
     <li
-      v-for="(seat, key) in date.places"
+      v-for="(place, key) in date.places"
       :key="key"
       class="flex space-x-3"
-      :class="liClass(seat)"
-      @click="canReserveSeat(seat) ? switchReservation(key) : null"
+      :class="liClass(place)"
+      @click="
+        date.canReserveSeat(place) ? date.switchReservation(key) : null
+      "
     >
       <!-- Icon -->
       <svg
@@ -84,16 +56,16 @@ function liClass(seat: { id: number }): Array<string> {
         v-if="store.isInsa"
         class="text-base font-normal leading-tight"
       >
-        {{ hour(date.date, key) }}
+        {{ date.hour(key) }}
       </span>
       <span class="text-base font-normal leading-tight">
-        {{ seat === null ? "place libre" : seat.name }}
+        {{ place === null ? "place libre" : place.name }}
       </span>
       <button
-        v-if="seat && store.isAdmin"
+        v-if="place && store.isAdmin"
         type="button"
         class="text-red-600"
-        @click.stop="deleteReservation(key)"
+        @click.stop="date.deleteReservation(key)"
       >
         <svg
           class="w-4 h-4"

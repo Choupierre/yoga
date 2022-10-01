@@ -1,43 +1,45 @@
 <script setup lang="ts">
-const store = authStore()
-const formUser = { name: "", email: "" };
+const store = authStore();
+const formUser = {
+    name: "",
+    email: "",
+};
 const formUsersuccess = ref("");
 const formUserError = ref("");
 
-const emit = defineEmits(['update'])
-
 function addUser() {
-    axios.post("/api/users", formUser).then((res) => {
-        console.log(res);
-        formUsersuccess.value = "nouvel élève ajouté";
-        formUser.name = "";
-        formUser.email = "";
-        emit('update')
-        setTimeout(() => {
-            formUsersuccess.value = "";
-        }, 3000);
-    }).catch(err => {
-        console.log(err.response);
-        formUserError.value = err.response.data.message
-        setTimeout(() => {
-            formUserError.value = "";
-        }, 3000);
-    });
-}
-
-function deleteUser(id:number) {
-    if (window.confirm('voulez vous supprimer cet élève?')) {
-        axios.delete("/api/users/" + id).then(() => {
-            emit('update')
+    axios
+        .post("/api/users", formUser)
+        .then((res) => {
+            console.log(res);
+            formUsersuccess.value = "nouvel élève ajouté";
+            formUser.name = "";
+            formUser.email = "";
+            store.init();
+            setTimeout(() => {
+                formUsersuccess.value = "";
+            }, 3000);
+        })
+        .catch((err) => {
+            console.log(err.response);
+            formUserError.value = err.response.data.message;
+            setTimeout(() => {
+                formUserError.value = "";
+            }, 3000);
         });
-    }
 }
 </script>
 
 <template>
-  <div class="p-6 bg-slate-200 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+  <div
+    class="p-6 bg-slate-200 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+  >
     <a href="#">
-      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Ajouter un élève</h5>
+      <h5
+        class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+      >
+        Ajouter un élève
+      </h5>
     </a>
     <div class="mb-6">
       <label
@@ -79,26 +81,26 @@ function deleteUser(id:number) {
       class="p-3 mt-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
       role="alert"
     >
-      <span class="font-medium">{{
-        formUsersuccess
-      }}</span>
+      <span class="font-medium">{{ formUsersuccess }}</span>
     </div>
     <div
       v-if="formUserError"
       class="p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
       role="alert"
     >
-      <span class="font-medium">{{
-        formUserError
-      }}</span>
+      <span class="font-medium">{{ formUserError }}</span>
     </div>
     <div class="mt-4">
       <span
         v-for="user in store.users"
         id="badge-dismiss-green"
         :key="user.id"
-        :class="user.created_at!==user.updated_at? 'text-green-800 bg-green-100 dark:bg-green-200 dark:text-green-800' : 'text-red-800 bg-red-100 dark:bg-red-200 dark:text-red-800'"
-        class="inline-flex items-center py-1 px-2 mr-2 mb-2 text-sm font-medium  rounded "
+        :class="
+          user.created_at !== user.updated_at
+            ? 'text-green-800 bg-green-100 dark:bg-green-200 dark:text-green-800'
+            : 'text-red-800 bg-red-100 dark:bg-red-200 dark:text-red-800'
+        "
+        class="inline-flex items-center py-1 px-2 mr-2 mb-2 text-sm font-medium rounded"
       >
         {{ user.name }}
         <button
@@ -106,7 +108,7 @@ function deleteUser(id:number) {
           class="inline-flex items-center p-0.5 ml-2 text-sm bg-transparent rounded-sm hover:bg-gray-200 hover:text-green-900 dark:hover:bg-gray-300"
           data-dismiss-target="#badge-dismiss-green"
           aria-label="Remove"
-          @click="deleteUser(user.id)"
+          @click="user.deleteUser()"
         >
           <svg
             aria-hidden="true"
