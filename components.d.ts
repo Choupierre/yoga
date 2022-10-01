@@ -8,7 +8,6 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ApplicationLogo: typeof import('./resources/js/Components/ApplicationLogo.vue')['default']
-    Authenticated: typeof import('./resources/js/Layouts/Authenticated.vue')['default']
     BreezeAuthenticatedLayout: typeof import('./resources/js/Layouts/BreezeAuthenticatedLayout.vue')['default']
     Button: typeof import('./resources/js/Components/Button.vue')['default']
     Checkbox: typeof import('./resources/js/Components/Checkbox.vue')['default']
