@@ -26,33 +26,80 @@ const submit = () => {
 </script>
 
 <template>
-    <BreezeGuestLayout>
-        <Head title="Reset Password" />
+  <BreezeGuestLayout>
+    <Head title="Reset Password" />
 
-        <form @submit.prevent="submit">
-            <div>
-                <BreezeLabel for="email" value="Email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"/>
-                <BreezeInput id="email" type="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" v-model="form.email" required autofocus autocomplete="username" />
-                <BreezeInputError class="mt-2" :message="form.errors.email" />
-            </div>
+    <form @submit.prevent="submit">
+      <div>
+        <BreezeLabel
+          for="email"
+          value="Email"
+          class="label1"
+        />
+        <BreezeInput
+          id="email"
+          v-model="form.email"
+          type="email"
+          class="input1"
+          required
+          autofocus
+          autocomplete="username"
+        />
+        <BreezeInputError
+          class="mt-2"
+          :message="form.errors.email"
+        />
+      </div>
 
-            <div class="mt-4">
-                <BreezeLabel for="password" value="Password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"/>
-                <BreezeInput id="password" type="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" v-model="form.password" required autocomplete="new-password" />
-                <BreezeInputError class="mt-2" :message="form.errors.password" />
-            </div>
+      <div class="mt-4">
+        <BreezeLabel
+          for="password"
+          value="Password"
+          class="label1"
+        />
+        <BreezeInput
+          id="password"
+          v-model="form.password"
+          type="password"
+          class="input1"
+          required
+          autocomplete="new-password"
+        />
+        <BreezeInputError
+          class="mt-2"
+          :message="form.errors.password"
+        />
+      </div>
 
-            <div class="mt-4">
-                <BreezeLabel for="password_confirmation" value="Confirm Password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"/>
-                <BreezeInput id="password_confirmation" type="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" v-model="form.password_confirmation" required autocomplete="new-password" />
-                <BreezeInputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
+      <div class="mt-4">
+        <BreezeLabel
+          for="password_confirmation"
+          value="Confirm Password"
+          class="label1"
+        />
+        <BreezeInput
+          id="password_confirmation"
+          v-model="form.password_confirmation"
+          type="password"
+          class="input1"
+          required
+          autocomplete="new-password"
+        />
+        <BreezeInputError
+          class="mt-2"
+          :message="form.errors.password_confirmation"
+        />
+      </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <BreezeButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">
-                    Reset Password
-                </BreezeButton>
-            </div>
-        </form>
-    </BreezeGuestLayout>
+      <div class="flex items-center justify-end mt-4">
+        <BreezeButton
+          :class="{ 'opacity-25': form.processing }"
+          :disabled="form.processing"
+          class="buttonblue"
+        >
+          Reset Password
+        </BreezeButton>
+      </div>
+    </form>
+  </BreezeGuestLayout>
 </template>

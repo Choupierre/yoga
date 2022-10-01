@@ -11,17 +11,14 @@ const { date } = toRefs(props);
 
 const emit = defineEmits(["update"]);
 
-
-
-function hour(date: string, key:number) {
-  let hours = parseInt(date.slice(-5, -3));
-  let minutes:number|string = parseInt(date.slice(-2));
-  const coef = minutes + 30 >= 60 ? 1 : 0;
-  hours = hours + Math.floor((key + coef) / 2);
-  minutes = (minutes + 30 * key) % 60;
-  minutes = minutes === 0 ? "00" : minutes;
-  return hours + "h" + minutes;
-}
+const alreadyReserved = () =>
+  !!date.value.places.find((place:{id:number}) => place && place.id === store.id);
+  
+const freeSeats = () =>
+  date.value.places.reduce(
+    (prev:number, current:null|object) => prev + (current == null ? 1 : 0),
+    0
+  );
 
 function deleteDate(id:number) {
   if (window.confirm("voulez vous supprimer cette date?")) {
@@ -31,9 +28,8 @@ function deleteDate(id:number) {
   }
 }
 
-function switchReservation(key:number) {
-  if (!date.value.old)
-  axios.post("/api/dates/switch/" + date.value.id, { key }).then(() => {
+function switchReservation() {
+  axios.get("/api/dates/switch/" + date.value.id).then(() => {
     emit("update");
   });
 }
@@ -45,10 +41,10 @@ function switchReservation(key:number) {
     class="p-4 w-full h-full rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 flex flex-col"
   >
     <h5 class="text-xl font-medium text-gray-500 dark:text-gray-400">
-      {{ date.user.name }}
-    </h5>
-    <h5 class="text-xl font-medium text-gray-500 dark:text-gray-400">
       {{ date.date }}
+    </h5>
+    <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
+      {{ freeSeats() }} place(s) libre(s)
     </h5>
     <!-- List -->
     <ul
@@ -59,9 +55,8 @@ function switchReservation(key:number) {
         v-for="(seat, key) in date.places"
         :key="key"
         class="flex space-x-3"
-        :class="[seat === null ? 'text-gray-400 dark:text-gray-500' : 'text-blue-600 dark:text-blue-500',(seat && seat.id!==store.user.id) || date.old ? '': 'hover:cursor-pointer hover:bg-red-100']"
-        @click="switchReservation(key)"
-      > 
+        :class=" seat === null ? 'text-gray-400 dark:text-gray-500' : 'text-blue-600 dark:text-blue-500' "
+      >
         <!-- Icon -->
         <svg
           aria-hidden="true"
@@ -77,9 +72,29 @@ function switchReservation(key:number) {
             clip-rule="evenodd"
           />
         </svg>
-        <span class="text-base font-normal leading-tight">{{ hour(date.date, key) }} - {{ seat === null ? "place libre" : seat.name }}</span>
+        <span class="text-base font-normal leading-tight">{{
+          seat === null ? "place libre" : seat.name
+        }}</span>
       </li>
     </ul>
+    <div v-if="!date.old">
+      <button
+        v-if="freeSeats() || alreadyReserved()"
+        type="button"
+        class="buttonblue"
+        @click="switchReservation()"
+      >
+        {{ alreadyReserved() ? "se retirer" : "réserver" }}
+      </button>
+      <button
+        v-else
+        type="button"
+        disabled
+        class="text-white bg-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center"
+      >
+        complet
+      </button>
+    </div>
     <button
       v-if="store.isAdmin"
       type="button"

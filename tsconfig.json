@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "types": [
+            "vite/client"
+        ],
+        "strict": true,
+        "jsx": "preserve",
+        "importHelpers": true,
+        "moduleResolution": "node",
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "baseUrl": ".",
+        "paths": {
+            "/@/*": ["resources/js/*"],
+            "Yogas/*": ["resources/js/Components/Yogas/*"],            
+        },
+        "lib": [
+            "esnext",
+            "dom",
+            "dom.iterable",
+            "scripthost"
+        ]
+    },   
+    "include": [
+        "./*.ts", 
+        "./resources/**/*.ts",
+        "./resources/**/*.tsx",
+        "./resources/**/*.vue", "resources/js/app.js",
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
