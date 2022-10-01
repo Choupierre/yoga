@@ -9,11 +9,15 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ApplicationLogo: typeof import('./resources/js/Components/ApplicationLogo.vue')['default']
     BreezeAuthenticatedLayout: typeof import('./resources/js/Layouts/BreezeAuthenticatedLayout.vue')['default']
+    BtnDelete: typeof import('./resources/js/Components/Yogas/BtnDelete.vue')['default']
     Button: typeof import('./resources/js/Components/Button.vue')['default']
     Checkbox: typeof import('./resources/js/Components/Checkbox.vue')['default']
     ConfirmPassword: typeof import('./resources/js/Pages/Auth/ConfirmPassword.vue')['default']
+    copy: typeof import('./resources/js/Components/Yogas/TheDate copy.vue')['default']
     Dashboard: typeof import('./resources/js/Pages/Dashboard.vue')['default']
     DateInsa: typeof import('./resources/js/Components/Yogas/DateInsa.vue')['default']
+    DateSlot: typeof import('./resources/js/Components/Yogas/DateSlot.vue')['default']
+    DateSlots: typeof import('./resources/js/Components/Yogas/DateSlots.vue')['default']
     DateYoga: typeof import('./resources/js/Components/Yogas/DateYoga.vue')['default']
     Dropdown: typeof import('./resources/js/Components/Dropdown.vue')['default']
     DropdownLink: typeof import('./resources/js/Components/DropdownLink.vue')['default']
@@ -30,6 +34,7 @@ declare module '@vue/runtime-core' {
     Register: typeof import('./resources/js/Pages/Auth/Register.vue')['default']
     ResetPassword: typeof import('./resources/js/Pages/Auth/ResetPassword.vue')['default']
     ResponsiveNavLink: typeof import('./resources/js/Components/ResponsiveNavLink.vue')['default']
+    TheDate: typeof import('./resources/js/Components/Yogas/TheDate.vue')['default']
     VerifyEmail: typeof import('./resources/js/Pages/Auth/VerifyEmail.vue')['default']
     Welcome: typeof import('./resources/js/Pages/Welcome.vue')['default']
   }

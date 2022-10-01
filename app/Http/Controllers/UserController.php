@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Mail\NewInsaUserWelcomeMail;
 use App\Mail\NewYogaUserWelcomeMail;
 use App\Models\Date;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -84,7 +85,7 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(Request $request, User $user)
     {
         //
     }

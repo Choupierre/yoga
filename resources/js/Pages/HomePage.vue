@@ -9,7 +9,7 @@ function update() {
   axios.get("/api/store").then((res) => {
     store.dates = res.data.dates;
     store.users = res.data.users;
-    store.user = res.data.auth;
+    store.user = res.data.auth; 
   });
 }
 </script>
@@ -29,16 +29,10 @@ function update() {
           v-for="(date, key) in store.dates"
           :key="key"
         >
-          <DateInsa
-            v-if="store.isInsa"
+          <TheDate          
             :date="date"
             @update="update"
-          />
-          <DateYoga
-            v-if="store.isYoga"
-            :date="date"
-            @update="update"
-          />
+          />         
         </div>
       </div>
     </div>

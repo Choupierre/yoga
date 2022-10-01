@@ -52,8 +52,8 @@ class DatePolicy
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, Date $date)
-    {
-        //
+    {      
+        return !!$user->admin;
     }
 
     /**

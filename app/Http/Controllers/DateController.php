@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Date;
 use App\Http\Requests\StoreDateRequest;
 use App\Http\Requests\UpdateDateRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DateController extends Controller
@@ -52,6 +53,18 @@ class DateController extends Controller
     public function switch(Date $date)
     {
         $places = collect($date->places);
+
+        if (request()->key === null)
+            $places = $this->reserveOrCancelDate($places);
+        else
+            $places = $this->reserveOrCancelDateSlot($places);
+
+        $date->places = $places;
+        $date->save();
+    }
+
+    private function reserveOrCancelDate($places)
+    {
         $in = !!$places->firstWhere('id', Auth::id());
         if ($in) {
             $places->transform(function ($user, $key) {
@@ -65,29 +78,16 @@ class DateController extends Controller
                 $places->splice($free, 1, [Auth::user()]);
             }
         }
-
-        $date->places = $places;
-        $date->save();
+        return $places;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function switch2(Date $date)
+    private function reserveOrCancelDateSlot($places)
     {
-        $places = collect($date->places);
-
         if ($places[request()->key] && $places[request()->key]['id'] == Auth::id())
             $places[request()->key] = null;
         elseif ($places[request()->key] === null)
             $places[request()->key] = Auth::user();
-
-
-        $date->places = $places;
-        $date->save();
+        return $places;
     }
 
     /**
@@ -109,7 +109,6 @@ class DateController extends Controller
      */
     public function edit(Date $date)
     {
-        //
     }
 
     /**
@@ -119,9 +118,13 @@ class DateController extends Controller
      * @param  \App\Models\Date  $date
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateDateRequest $request, Date $date)
+    public function update(Request $request, Date $date)
     {
-        //
+        $this->authorize($date);
+        $places = collect($date->places);
+        $places[request()->key] = null;
+        $date->places = $places;
+        $date->save();
     }
 
     /**
