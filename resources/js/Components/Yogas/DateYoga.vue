@@ -38,8 +38,28 @@ function switchReservation() {
 <template>
   <div
     :class="date.old ? 'bg-gray-200' : 'bg-white'"
-    class="p-4 w-full h-full rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 flex flex-col"
+    class="relative p-4 w-full h-full rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 flex flex-col items-start"
   >
+    <button
+      v-if="store.isAdmin"
+      type="button"
+      class="absolute buttonred -top-2 -right-2"
+      @click="deleteDate(date.id)"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      ><path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"
+      /></svg>
+      <span class="sr-only">Supprimer</span>
+    </button>
     <h5 class="text-xl font-medium text-gray-500 dark:text-gray-400">
       {{ date.date }}
     </h5>
@@ -84,7 +104,7 @@ function switchReservation() {
         class="buttonblue"
         @click="switchReservation()"
       >
-        {{ alreadyReserved() ? "se retirer" : "réserver" }}
+        {{ alreadyReserved() ? "Annuler" : "Réserver" }}
       </button>
       <button
         v-else
@@ -92,16 +112,8 @@ function switchReservation() {
         disabled
         class="text-white bg-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center"
       >
-        complet
+        Complet
       </button>
-    </div>
-    <button
-      v-if="store.isAdmin"
-      type="button"
-      class="buttonred"
-      @click="deleteDate(date.id)"
-    >
-      supprimer
-    </button>
+    </div>    
   </div>
 </template>
