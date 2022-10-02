@@ -23,17 +23,19 @@ export default defineConfig({
             refresh: true,
         }),
         vue({
-
+            template: {
+                transformAssetUrls: {                    
+                    base: null,
+                    includeAbsolute: false,
+                },
+            },
         }),
         AutoImport({
             imports: ['vue', 'pinia',            
                 {
                     'axios': [['default', 'axios'],]
-                },
-                {
-                    'route': ['ziggy-js']
-                },
-                { '@/stores/auth': [['default', 'authStore']] },],
+                },                
+                { '@/stores/auth': [['store', 'theStore']] },],
             dts: true,
             eslintrc: {
                 enabled: true,

@@ -1,47 +1,103 @@
-import { DateElement, User } from "../types";
-export default defineStore('auth', () => {
-  const appName = import.meta.env.VITE_APP_NAME
-  const auth = ref<User>()
-  const dates = ref<DateElement[]>()
-  const users = ref<User[]>()
+export const store = defineStore("store", () => {
+    const appName = import.meta.env.VITE_APP_NAME;
+    const auth = ref<User>();
+    const dates = ref<DateElement[]>();
+    const users = ref<User[]>();
 
-  const init = () => {
-    axios.get("/api/store").then((res) => {
-      auth.value = res.data.auth;   
-      dates.value = res.data.dates;
-      dates.value?.forEach(date => {
-        date.freeSeats = function () { return date.places.reduce((prev: number, current: null | object) => prev + (current == null ? 1 : 0), 0) };
-        date.alreadyReserved = function () { return !!date.places.find((place: { id: number }) => place && place.id === auth.value?.id) };
-        date.deleteReservation = function (key) { axios.put("/api/dates/" + this.id, { key }).then(() => { init() }); }
-        date.switchReservation = function (key?) { axios.post("/api/dates/switch/" + this.id, { key }).then(() => { init() }); }
-        date.deleteDate = function (): void { if (window.confirm("voulez vous supprimer cette date?")) { axios.delete("/api/dates/" + this.id).then(() => { init() }); } }
-        date.hour = function (key) {
-          let hours = +this.date.slice(-5, -3);
-          let minutes = +this.date.slice(-2);
-          const coef = minutes + 30 >= 60 ? 1 : 0;
-          hours = hours + Math.floor((key + coef) / 2);
-          minutes = (minutes + 30 * key) % 60;
-          return hours + "h" + (minutes === 0 ? "00" : minutes);
-        }
-        date.canReserveSeat = function (place: User | null) {
+    async function init() {
+        return axios.get("/api/store").then((res: { data: { auth: User; dates: DateElement[]; users: User[] } }) => {
+            auth.value = res.data.auth;
+            //auth.value.admin = false;
+            res.data.dates.forEach((date: DateElement) => {
+                dateMutation(date);
+                date.places.forEach((place, key) => {
+                    date.places[key] = placeMutation(date, place, key);
+                });
+            });
+            res.data.users.forEach((user: User) => {
+                userMutation(user);
+            });
+            dates.value = res.data.dates;
+            users.value = res.data.users;
+        });
+    }
 
-          if (isAdmin.value) return false;
-          if (place && place.id !== auth.value?.id) return false;
-          return isInsa.value && !this.old;
-        }
-      })
-      users.value = res.data.users;
-      users.value?.forEach(user => {
-        user.deleteUser = function () { if (window.confirm('voulez vous supprimer cet élève?')) { axios.delete("/api/users/" + this.id).then(() => { init() }); } }
-      })
-    });
-  }
+    function dateMutation(date: DateElement) {
+        date.freeSeats = (function () {
+            return date.places.reduce((prev: number, current: null | object) => prev + (current == null ? 1 : 0), 0);
+        })();
+        date.alreadyReserved = (function () {
+            return !!date.places.find((place) => place && place.id === auth.value?.id);
+        })();
+        date.switchReservation = async function () {
+            await axios.post("/api/dates/switch/" + date.id);
+            init();
+        };
+        date.deleteDate = async function () {
+            if (window.confirm("voulez vous supprimer cette date?")) {
+                await axios.delete("/api/dates/" + this.id);
+                init();
+            }
+        };
+    }
 
-  const isAdmin = computed(() => auth.value?.admin)
-  const isInsa = computed(() => appName === "Insa")
-  const isYoga = computed(() => appName === "Yoga")
-  const defaultPlaces = computed(() => isInsa ? 8 : 5)
-  const displayTeacherName = computed(() => isInsa ? true : false)
+    function userMutation(user: User) {
+        user.deleteUser = async function () {
+            if (window.confirm("voulez vous supprimer cet élève?")) {
+                await axios.delete("/api/users/" + this.id);
+                init();
+            }
+        };
+    }
 
-  return { init, auth, isAdmin, dates, users, defaultPlaces, appName, displayTeacherName, isInsa, isYoga }
-})
+    function placeMutation(date: DateElement, place: Place | null, key: number): Place {
+        return {
+            ...place,
+            hour: (function () {
+                let hours = +date.date.slice(-5, -3);
+                let minutes = +date.date.slice(-2);
+                const coef = minutes >= 30 ? 1 : 0;
+                hours = hours + Math.floor((key + coef) / 2);
+                minutes = (minutes + 30 * key) % 60;
+                return hours + "h" + (minutes < 10 ? "0" : "") + minutes;
+            })(),
+            deleteReservation: async function () {
+                if (window.confirm("voulez vous supprimer cette réservation?")) {
+                    await axios.put("/api/dates/" + date.id, { key });
+                    init();
+                }
+            },
+            switchReservation: async function () {
+                await axios.post("/api/dates/switch/" + date.id, { key });
+                init();
+            },
+            canReserveSeat: (function () {
+                if (isAdmin.value) return false;
+                if (place && place.id !== auth.value?.id) return false;
+                return isInsa.value && !date.old;
+            })(),
+        };
+    }
+
+    const dateComing = computed(() => dates.value?.filter((date) => !date.old));
+    const dateOld = computed(() => dates.value?.filter((date) => date.old));
+
+    const isAdmin = computed(() => auth.value?.admin === true);
+    const isInsa = computed(() => appName === "Insa");
+    const isYoga = computed(() => appName === "Yoga");
+    const defaultPlaces = computed((): number => (isInsa ? 8 : 5));
+
+    return {
+        init,
+        auth,
+        isAdmin,
+        dates,
+        users,
+        defaultPlaces,
+        appName,
+        isInsa,
+        isYoga,
+        dateComing,
+        dateOld,
+    };
+});

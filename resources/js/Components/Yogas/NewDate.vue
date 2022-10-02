@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const store = authStore();
+const store = theStore();
 const formDate = {
     date: undefined,
     places: store.defaultPlaces,

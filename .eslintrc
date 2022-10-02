@@ -5,26 +5,17 @@
         "es2021": true,
         "node": true
     },
-    "extends": [
+    "extends": [       
         "plugin:vue/vue3-recommended",
-        "eslint:recommended",
+        "eslint:recommended",        
         "@vue/typescript/recommended",
-        "./.eslintrc-auto-import.json"
+        "./.eslintrc-auto-import.json",
+        "prettier"
     ],
     "parserOptions": {
         "ecmaVersion": 2021
-    },
-    "plugins": [
-        //"prettier"
-    ],
-    "rules": {
-        "vue/max-attributes-per-line": [
-            "error",
-            {
-                "singleline": 1,
-                "multiline": 1
-            }
-        ],
+    },    
+    "rules": {        
         "vue/multi-word-component-names": 0
     }
 }

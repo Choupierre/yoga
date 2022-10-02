@@ -2,7 +2,6 @@
   "globals": {
     "EffectScope": true,
     "acceptHMRUpdate": true,
-    "authStore": true,
     "axios": true,
     "computed": true,
     "createApp": true,
@@ -52,6 +51,7 @@
     "shallowReadonly": true,
     "shallowRef": true,
     "storeToRefs": true,
+    "theStore": true,
     "toRaw": true,
     "toRef": true,
     "toRefs": true,
@@ -64,7 +64,6 @@
     "watch": true,
     "watchEffect": true,
     "watchPostEffect": true,
-    "watchSyncEffect": true,
-    "ziggy-js": true
+    "watchSyncEffect": true
   }
 }

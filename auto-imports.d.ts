@@ -3,7 +3,6 @@ export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
-  const authStore: typeof import('@/stores/auth')['default']
   const axios: typeof import('axios')['default']
   const computed: typeof import('vue')['computed']
   const createApp: typeof import('vue')['createApp']
@@ -53,6 +52,7 @@ declare global {
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
   const storeToRefs: typeof import('pinia')['storeToRefs']
+  const theStore: typeof import('@/stores/auth')['store']
   const toRaw: typeof import('vue')['toRaw']
   const toRef: typeof import('vue')['toRef']
   const toRefs: typeof import('vue')['toRefs']
@@ -66,5 +66,4 @@ declare global {
   const watchEffect: typeof import('vue')['watchEffect']
   const watchPostEffect: typeof import('vue')['watchPostEffect']
   const watchSyncEffect: typeof import('vue')['watchSyncEffect']
-  const ziggy-js: typeof import('route')['ziggy-js']
 }
