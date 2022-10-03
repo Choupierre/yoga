@@ -15,8 +15,8 @@ declare global {
         date: string;
         old: boolean;
         user: User;
-        freeSeats: number;
-        alreadyReserved: boolean;
+        has_free_seats: number;
+        already_reserved: boolean;
         deleteReservation: (key: number) => void;
         switchReservation: () => void;
         deleteDate: () => void;

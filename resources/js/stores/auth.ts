@@ -1,8 +1,8 @@
-export const store = defineStore("store", () => {
+export default defineStore("store", () => {
     const appName = import.meta.env.VITE_APP_NAME;
     const auth = ref<User>();
-    const dates = ref<DateElement[]>();
-    const users = ref<User[]>();
+    const dates = ref<DateElement[]>([]);
+    const users = ref<User[]>([]);
 
     async function init() {
         return axios.get("/api/store").then((res: { data: { auth: User; dates: DateElement[]; users: User[] } }) => {
@@ -22,13 +22,7 @@ export const store = defineStore("store", () => {
         });
     }
 
-    function dateMutation(date: DateElement) {
-        date.freeSeats = (function () {
-            return date.places.reduce((prev: number, current: null | object) => prev + (current == null ? 1 : 0), 0);
-        })();
-        date.alreadyReserved = (function () {
-            return !!date.places.find((place) => place && place.id === auth.value?.id);
-        })();
+    function dateMutation(date: DateElement) {       
         date.switchReservation = async function () {
             await axios.post("/api/dates/switch/" + date.id);
             init();
@@ -79,13 +73,13 @@ export const store = defineStore("store", () => {
         };
     }
 
-    const dateComing = computed(() => dates.value?.filter((date) => !date.old));
-    const dateOld = computed(() => dates.value?.filter((date) => date.old));
+    const dateComing = computed(() => dates.value.filter((date) => !date.old));
+    const dateOld = computed(() => dates.value.filter((date) => date.old).reverse());
 
     const isAdmin = computed(() => auth.value?.admin === true);
     const isInsa = computed(() => appName === "Insa");
     const isYoga = computed(() => appName === "Yoga");
-    const defaultPlaces = computed((): number => (isInsa ? 8 : 5));
+    const defaultPlaces = computed((): number => (isInsa.value ? 8 : 5));
 
     return {
         init,

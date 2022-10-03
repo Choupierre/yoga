@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PropType } from "vue";
 import { DateElement } from "@/global";
-const store = theStore();
+const store = piniaStore();
 const props = defineProps({
     date: {
         type: Object as PropType<DateElement>,
@@ -27,7 +27,11 @@ const { date } = toRefs(props);
         <h5 class="text-xl font-medium text-gray-500 dark:text-gray-400">
             {{ date.date }}
         </h5>
-        <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">{{ date.freeSeats }} place(s) libre(s)</h5>
+        <h5
+            v-if="date.has_free_seats && !date.old"
+            class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
+            {{ date.has_free_seats }} place(s) libre(s)
+        </h5>        
         <!-- List -->
         <ul
             role="list"
@@ -40,14 +44,14 @@ const { date } = toRefs(props);
         </ul>
         <div v-if="!date.old && !store.isInsa">
             <button
-                v-if="(date.freeSeats || date.alreadyReserved) && !store.isAdmin"
+                v-if="(date.has_free_seats || date.already_reserved) && !store.isAdmin"
                 type="button"
                 class="buttonblue"
                 @click="date.switchReservation()">
-                {{ date.alreadyReserved ? "Annuler" : "Réserver" }}
+                {{ date.already_reserved ? "Annuler" : "Réserver" }}
             </button>
             <button
-                v-if="!date.freeSeats && !date.alreadyReserved"
+                v-if="!date.has_free_seats && !date.already_reserved"
                 type="button"
                 disabled
                 class="text-white bg-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">

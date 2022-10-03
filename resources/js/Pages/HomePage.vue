@@ -1,5 +1,5 @@
-<script setup lang="ts">
-const store = theStore();
+<script setup lang="ts">    
+const store = piniaStore();
 onMounted(async () => {
     await store.init();
 });
@@ -16,7 +16,7 @@ onMounted(async () => {
             </div>
             <hr />
             <div
-                v-if="store.dateComing?.length"
+                v-if="store.dateComing.length"
                 class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 m-4">
                 <div
                     v-for="(date, key) in store.dateComing"
@@ -26,7 +26,7 @@ onMounted(async () => {
             </div>
             <hr />
             <div
-                v-if="store.dateOld?.length"
+                v-if="store.dateOld.length"
                 class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 m-4">
                 <div
                     v-for="(date, key) in store.dateOld"

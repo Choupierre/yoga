@@ -16,6 +16,7 @@ declare module '@vue/runtime-core' {
     CheckIcon: typeof import('./resources/js/Components/Yogas/CheckIcon.vue')['default']
     ConfirmPassword: typeof import('./resources/js/Pages/Auth/ConfirmPassword.vue')['default']
     Dashboard: typeof import('./resources/js/Pages/Dashboard.vue')['default']
+    Dashboard1: typeof import('./resources/js/Pages/Dashboard1.vue')['default']
     DateSlot: typeof import('./resources/js/Components/Yogas/DateSlot.vue')['default']
     Dropdown: typeof import('./resources/js/Components/Dropdown.vue')['default']
     DropdownLink: typeof import('./resources/js/Components/DropdownLink.vue')['default']

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { PropType } from "vue";
 import { Place } from "@/global";
-const store = theStore();
+
+const store = piniaStore();
 const props = defineProps({
     place: {
         type: Object as PropType<Place>,

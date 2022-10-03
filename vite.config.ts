@@ -35,7 +35,7 @@ export default defineConfig({
                 {
                     'axios': [['default', 'axios'],]
                 },                
-                { '@/stores/auth': [['store', 'theStore']] },],
+                { '@/stores/auth': [['default', 'piniaStore']] },],
             dts: true,
             eslintrc: {
                 enabled: true,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const store = theStore();
+const store = piniaStore();
 const formDate = {
     date: undefined,
     places: store.defaultPlaces,

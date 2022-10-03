@@ -3,7 +3,7 @@ import BreezeDropdown from "@/Components/Dropdown.vue";
 import BreezeDropdownLink from "@/Components/DropdownLink.vue";
 import BreezeResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 
-const store = theStore();
+const store = piniaStore();
 const showingNavigationDropdown = ref(false);
 </script>
 

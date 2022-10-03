@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { AxiosError, AxiosResponse } from "axios";
 
-const store = theStore();
+const store = piniaStore();
 const formUser = {
     name: "",
     email: "",
