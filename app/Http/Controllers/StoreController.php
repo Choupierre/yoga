@@ -18,15 +18,6 @@ class StoreController extends Controller
      */
     public function __invoke(Request $request)
     {
-
-        foreach (Date::all() as $date) {
-            $places = json_decode($date->getRawOriginal('places'));
-
-            $date->places = collect($places)->map(fn ($place) => User::find($place?->id));
-            $date->save();
-        }
-
-
         $dates = Date::with('user')->orderBy('date')->get();
         $users = User::with('company')->where('admin', false)->get();
 
