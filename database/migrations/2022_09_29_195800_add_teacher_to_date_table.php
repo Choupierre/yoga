@@ -15,7 +15,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('dates', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id');
         });
         Date::where('user_id', 0)->update(['user_id'=> 2]);
     }
