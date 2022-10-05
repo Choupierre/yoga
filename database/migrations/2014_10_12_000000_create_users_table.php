@@ -32,12 +32,12 @@ return new class extends Migration
             'name' => 'Raphaelle Leclerc',
             'admin' => true,
         ]); */
-        User::create([
+         User::create([
             'password' => Hash::make('Azerty54'),
             'email' => 'pierre.cordier3@wanadoo.fr',
             'name' => 'Pierre Cordier',
             'admin' => true,
-        ]);
+        ]); 
     }
 
     

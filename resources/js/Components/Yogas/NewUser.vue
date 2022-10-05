@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AxiosError, AxiosResponse } from "axios";
-
+import { UserElement } from "@/global";
 const store = piniaStore();
 const formUser = {
     name: "",
@@ -31,6 +31,13 @@ function userCreatedError(err: AxiosError<{ message: string }>) {
 
 function addUser() {
     axios.post("/api/users", formUser).then(userCreated).catch(userCreatedError);
+}
+
+async function deleteUser(user: UserElement) {
+    if (window.confirm("voulez vous supprimer cet élève?")) {
+        await axios.delete("/api/users/" + user.id);
+        store.init();
+    }
 }
 </script>
 
@@ -98,7 +105,7 @@ function addUser() {
                     class="inline-flex items-center p-0.5 ml-2 text-sm bg-transparent rounded-sm hover:bg-gray-200 hover:text-green-900 dark:hover:bg-gray-300"
                     data-dismiss-target="#badge-dismiss-green"
                     aria-label="Remove"
-                    @click="user.deleteUser()">
+                    @click="deleteUser(user)">
                     <svg
                         aria-hidden="true"
                         class="w-3.5 h-3.5"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Date;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,8 +19,8 @@ class StoreController extends Controller
     public function __invoke(Request $request)
     {
         $dates = Date::with('user')->orderBy('date')->get();
-        $users = User::where('admin', false)->get();
+        $users = User::with('company')->where('admin', false)->get();
 
-        return ['dates' => $dates, 'users' => $users, 'auth' => Auth::user()];
+        return ['dates' => $dates, 'users' => $users, 'auth' => Auth::user()->load('company')];
     }
 }

@@ -4,38 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Date;
 use App\Http\Requests\StoreDateRequest;
-use App\Http\Requests\UpdateDateRequest;
-use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class DateController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreDateRequest  $request
-     * @return \Illuminate\Http\Response
+     * 
      */
-    public function store(StoreDateRequest $request)
+    public function store(StoreDateRequest $request): void
     {
         Date::create([
             'user_id' => Auth::id(),
@@ -47,93 +28,73 @@ class DateController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Date  $date
+     * @return Date
      */
-    public function switch(Date $date)
+    public function switch(Date $date): Date
     {
-        $places = collect($date->places);
-
         if (request()->key === null)
-            $places = $this->reserveOrCancelDate($places);
+            $this->reserveOrCancelDate($date->places);
         else
-            $places = $this->reserveOrCancelDateSlot($places);
-
-        $date->places = $places;
+            $this->reserveOrCancelDateSlot($date->places);
         $date->save();
+        return $date->load('user');
     }
 
-    private function reserveOrCancelDate($places)
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  Collection<User|null>  $places
+     * 
+     */
+    private function reserveOrCancelDate($places): void
     {
-        $in = !!$places->firstWhere('id', Auth::id());
-        if ($in) {
-            $places->transform(function ($user, $key) {
-                return ($user && $user['id'] === Auth::id()) ? null : $user;
-            });
+        if ($places->firstWhere('id', Auth::id())) {
+            $places->transform(fn ($user) => Auth::user()->is($user) ? null : $user);
         } else {
-            $free = $places->search(function ($user, $key) {
-                return $user === null;
-            });
+            $free = $places->search(fn ($user) => !$user);
             if ($free !== false) {
-                $places->splice($free, 1, [Auth::user()]);
+                $places[$free] = Auth::user();
             }
         }
-        return $places;
     }
 
-    private function reserveOrCancelDateSlot($places)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  Collection<User|null>  $places
+     * 
+     */
+    private function reserveOrCancelDateSlot($places): void
     {
         if ($places[request()->key] && $places[request()->key]['id'] == Auth::id())
             $places[request()->key] = null;
         elseif ($places[request()->key] === null)
             $places[request()->key] = Auth::user();
-        return $places;
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Date  $date
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Date $date)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Date  $date
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Date $date)
-    {
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateDateRequest  $request
-     * @param  \App\Models\Date  $date
-     * @return \Illuminate\Http\Response
+     *     
+     * @param  Date $date
+     * @return Date
      */
-    public function update(Request $request, Date $date)
+    public function update(Date $date): Date
     {
         $this->authorize($date);
-        $places = collect($date->places);
-        $places[request()->key] = null;
-        $date->places = $places;
+        $date->places[request()->key] = null;
         $date->save();
+        return $date;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Date  $date
-     * @return \Illuminate\Http\Response
+     * @param  Date $date
+     * 
      */
-    public function destroy(Date $date)
+    public function destroy(Date $date): void
     {
         $date->delete();
     }

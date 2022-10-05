@@ -2,7 +2,7 @@
 const store = piniaStore();
 const formDate = {
     date: undefined,
-    places: store.defaultPlaces,
+    places: store.auth?.config.slots,
 };
 const formDatesuccess = ref("");
 const formDateError = ref("");
@@ -53,7 +53,7 @@ function addDate() {
     </div>
     <div class="mb-6">
       <label
-        v-if="store.isInsa"
+        v-if="!store.auth?.config.group"
         for="number"
         class="label1"
       >Nombre de demi-heures (13h à 17h = 8 demi-heures) :

@@ -17,7 +17,7 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                {{ store.appName }}
+                                {{ store.auth?.company.name }}
                             </div>
                         </div>
 

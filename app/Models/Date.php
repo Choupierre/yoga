@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,7 +26,7 @@ class Date extends Model
      *
      * @var array
      */
-    protected $appends = ['has_free_seats', 'already_reserved', 'old'];
+    protected $appends = ['has_free_seats', 'already_reserved', 'old', 'date_for_humans'];
 
     /**
      * The attributes that should be cast.
@@ -33,7 +34,7 @@ class Date extends Model
      * @var array
      */
     protected $casts = [
-        'places' => 'array'       
+        'date' => 'datetime'      
     ];
 
     public function user()
@@ -42,13 +43,26 @@ class Date extends Model
     }
 
     /**    
+     * 
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function dateForHumans(): Attribute
+    {
+        return new Attribute(
+            get: fn () => $this->date->translatedFormat('D d F Y à H\hi')
+        );
+    }
+
+    /**
+     * Interact with the user's first name.
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */
-    protected function date(): Attribute
+    protected function places(): Attribute
     {
-        return new Attribute(
-            get: fn ($value) => Carbon::create($value)->translatedFormat('D d F Y à H\hi')
+        return Attribute::make(
+            fn ($value) => collect(json_decode($value))->map(fn ($place) => User::find($place)),
+            fn ($value) => json_encode(collect($value)->map(fn ($place) => $place ? $place->id : $place))
         );
     }
 
@@ -59,7 +73,7 @@ class Date extends Model
     protected function hasFreeSeats(): Attribute
     {
         return new Attribute(
-            get: fn () => count(array_filter($this->places, fn ($place) => $place === null))
+            get: fn () => $this->places->filter(fn ($place) => $place === null)->count()
         );
     }
 
@@ -70,7 +84,7 @@ class Date extends Model
     protected function alreadyReserved(): Attribute
     {
         return new Attribute(
-            get: fn ($value, $attributes) => collect($this->places)->contains('id', Auth::id())
+            get: fn ($value, $attributes) => $this->places->contains('id', Auth::id())
         );
     }
 

@@ -21,7 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'admin'
+        'admin',
+        'company_id'
     ];
 
     /**
@@ -41,11 +42,17 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'admin' => 'boolean'
+        'admin' => 'boolean',
+        'config' => 'array'
     ];
 
     public function dates()
     {
         return $this->hasMany(Date::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

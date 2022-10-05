@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Place } from "@/stores/class";
 import { PropType } from "vue";
-import { Place } from "@/global";
 
 const store = piniaStore();
 const props = defineProps({
@@ -11,9 +11,15 @@ const props = defineProps({
 });
 const { place } = toRefs(props);
 
-function liClass(place: Place): string {   
-    let classArray: string = place.id ? "text-blue-600 dark:text-blue-500" : "text-gray-400 dark:text-gray-500";
-    classArray += place.canReserveSeat ? " hover:cursor-pointer hover:bg-blue-100" : "";
+function canReserveSeat(place: Place) {   
+    if (store.auth?.admin) return false; 
+    if (place.place && place.place?.id !== store.auth?.id) return false;   
+    return place.date.date.user.config.group && !place.date.date.old;
+}
+
+function liClass(place: Place): string {
+    let classArray: string = place.place?.id ? "text-blue-600 dark:text-blue-500" : "text-gray-400 dark:text-gray-500";
+    classArray += canReserveSeat(place) ? " hover:cursor-pointer hover:bg-blue-100" : "";
     return classArray;
 }
 </script>
@@ -22,18 +28,18 @@ function liClass(place: Place): string {
     <li
         class="flex space-x-3"
         :class="liClass(place)"
-        @click="place.canReserveSeat ? place.switchReservation() : null">
+        @click="canReserveSeat(place) ? place.switchReservation() : null">
         <CheckIcon />
         <span
-            v-if="store.isInsa"
+            v-if="!place.date.date.user.config.group"
             class="text-base font-normal leading-tight">
-            {{ place.hour }}
+            {{ place.hour() }}
         </span>
         <span class="text-base font-normal leading-tight">
-            {{ place.id ? place.name : "place libre" }}
+            {{ place.place?.id ? place.place.name : "place libre" }}
         </span>
         <BtnDeleteReservation
-            v-if="place.id && store.isAdmin"
+            v-if="place.place?.id && store.auth?.admin"
             @click.stop="place.deleteReservation()" />
     </li>
 </template>

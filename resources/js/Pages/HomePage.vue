@@ -1,4 +1,4 @@
-<script setup lang="ts">    
+<script setup lang="ts">
 const store = piniaStore();
 onMounted(async () => {
     await store.init();
@@ -9,7 +9,7 @@ onMounted(async () => {
     <BreezeAuthenticatedLayout>
         <div class="container mx-auto">
             <div
-                v-if="store.isAdmin"
+                v-if="store.auth?.admin"
                 class="grid grid-cols-1 md:grid-cols-2 gap-4 m-4">
                 <NewDate />
                 <NewUser />

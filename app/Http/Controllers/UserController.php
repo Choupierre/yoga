@@ -9,6 +9,7 @@ use App\Mail\NewInsaUserWelcomeMail;
 use App\Mail\NewYogaUserWelcomeMail;
 use App\Models\Date;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -47,7 +48,7 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'config' => ['mail' => true, 'mailNotified' => false, 'notify_all' => true],
-            'orchestra_id' => 1,
+            'company_id' => Auth::user()->company_id,
             'password' => Hash::make('dsfgdsfgsfgfdsg'),
         ]);
         if (config('app.name') === "Yoga")

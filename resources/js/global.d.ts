@@ -1,5 +1,5 @@
 declare global {
-    interface User {
+    interface UserElement {
         id: number;
         name: string;
         email: string;
@@ -7,27 +7,23 @@ declare global {
         deleteUser: () => void;
         created_at: string;
         updated_at: string;
+        company: { name: string };
+        config: { group: boolean; slots: number; display_teacher_name: boolean };
     }
 
     interface DateElement {
         id: number;
         places: Place[];
         date: string;
+        date_for_humans: string;
         old: boolean;
-        user: User;
+        user: UserElement;
         has_free_seats: number;
         already_reserved: boolean;
         deleteReservation: (key: number) => void;
         switchReservation: () => void;
         deleteDate: () => void;
     }
-
-    interface Place extends Partial<User> {
-        hour: string;
-        canReserveSeat: boolean;
-        deleteReservation: () => void;
-        switchReservation: () => void;
-    }
 }
 
-export { User, DateElement, Place };
+export { UserElement, DateElement };
