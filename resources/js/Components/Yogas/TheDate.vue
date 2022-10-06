@@ -50,7 +50,7 @@ async function deleteDate() {
                 :date="date"
                 :place="place" />
         </ul>
-        <div v-if="!date.date.old && !date.date.user.config.group">
+        <div v-if="!date.date.old && date.date.user.config.group">
             <button
                 v-if="(date.date.has_free_seats || date.date.already_reserved) && !store.auth?.admin"
                 type="button"

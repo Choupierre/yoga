@@ -14,7 +14,7 @@ const { place } = toRefs(props);
 function canReserveSeat(place: Place) {   
     if (store.auth?.admin) return false; 
     if (place.place && place.place?.id !== store.auth?.id) return false;   
-    return place.date.date.user.config.group && !place.date.date.old;
+    return !place.date.date.user.config.group && !place.date.date.old;
 }
 
 function liClass(place: Place): string {
