@@ -38,7 +38,7 @@ class DateController extends Controller
         else
             $this->reserveOrCancelDateSlot($date->places);
         $date->save();
-        return $date->load('user');
+        return $date;
     }
 
 

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { PropType } from "vue";
 import { Date1 } from "@/stores/class";
+
 const store = piniaStore();
+
 const props = defineProps({
     date: {
         type: Object as PropType<Date1>,

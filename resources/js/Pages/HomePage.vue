@@ -1,5 +1,7 @@
 <script setup lang="ts">
+
 const store = piniaStore();
+
 onMounted(async () => {
     await store.init();
 });

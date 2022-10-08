@@ -97,7 +97,7 @@ async function deleteUser(user: UserElement) {
                 v-for="user in store.users"
                 id="badge-dismiss-green"
                 :key="user.id"
-                :class="user.created_at !== user.updated_at ? 'text-green-800 bg-green-100 dark:bg-green-200 dark:text-green-800' : 'text-red-800 bg-red-100 dark:bg-red-200 dark:text-red-800'"
+                :class="user.active ? 'text-green-800 bg-green-100 dark:bg-green-200 dark:text-green-800' : 'text-red-800 bg-red-100 dark:bg-red-200 dark:text-red-800'"
                 class="inline-flex items-center py-1 px-2 mr-2 mb-2 text-sm font-medium rounded">
                 {{ user.name }}
                 <button

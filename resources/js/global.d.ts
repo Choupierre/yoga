@@ -5,8 +5,7 @@ declare global {
         email: string;
         admin: boolean;
         deleteUser: () => void;
-        created_at: string;
-        updated_at: string;
+        active: boolean;   
         company: { name: string };
         config: { group: boolean; slots: number; display_teacher_name: boolean };
     }

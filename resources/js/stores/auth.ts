@@ -10,7 +10,7 @@ const store = defineStore("store", () => {
             auth.value = res.data.auth;
             //auth.value.admin = false;
             dates.value = res.data.dates.map((date) => new Date1(date));
-            users.value = res.data.users;       
+            users.value = res.data.users;
         });
     }
 

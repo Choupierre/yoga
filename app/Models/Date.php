@@ -37,6 +37,13 @@ class Date extends Model
         'date' => 'datetime'      
     ];
 
+    /**
+    * The relationships that should always be loaded.
+    *
+    * @var array
+    */
+   protected $with = ['user'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -97,5 +104,5 @@ class Date extends Model
         return new Attribute(
             get: fn ($value, $attributes) => $this->date < now()
         );
-    }
+    }    
 }
