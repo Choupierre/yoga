@@ -102,7 +102,7 @@ class Date extends Model
     protected function old(): Attribute
     {
         return new Attribute(
-            get: fn ($value, $attributes) => $this->date < now()
+            get: fn ($value, $attributes) => $this->date->endOfDay() < now()
         );
     }    
 }
