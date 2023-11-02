@@ -1,13 +1,20 @@
 export class Date1 {
     places: Place[] = [];
+    waiting: { id: number, name: string }[] = [];
 
     constructor(public date: DateElement) {
         this.mutate();
     }
 
     public mutate() {
-        this.date.places.forEach((place, key) => {
+        console.log('rrr')
+        this.places = [];
+        this.waiting = [];
+        this.date.places.forEach((place, key) => {            
             this.places[key] = new Place(this, place, key);
+        });
+        this.date.waiting.forEach((place, key) => {
+            this.waiting[key] = place;
         });
     }
 
@@ -16,10 +23,18 @@ export class Date1 {
         this.date = res.data;
         this.mutate();
     }
+
+    async addWaiting() {
+        const res = await axios.post("/api/dates/waiting/" + this.date.id);
+        this.date = res.data;
+        this.mutate();
+    }
+
+
 }
 
 export class Place {
-    constructor(public date: Date1, public place: UserElement | null, public key: number) {}
+    constructor(public date: Date1, public place: UserElement | null, public key: number) { }
 
     hour() {
         const date = new Date(this.date.date.date).getTime();

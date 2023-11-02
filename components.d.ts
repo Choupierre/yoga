@@ -15,6 +15,7 @@ declare module '@vue/runtime-core' {
     Checkbox: typeof import('./resources/js/Components/Checkbox.vue')['default']
     CheckIcon: typeof import('./resources/js/Components/Yogas/CheckIcon.vue')['default']
     ConfirmPassword: typeof import('./resources/js/Pages/Auth/ConfirmPassword.vue')['default']
+    copy: typeof import('./resources/js/Components/Yogas/DateSlot copy.vue')['default']
     Dashboard: typeof import('./resources/js/Pages/Dashboard.vue')['default']
     Dashboard1: typeof import('./resources/js/Pages/Dashboard1.vue')['default']
     DateSlot: typeof import('./resources/js/Components/Yogas/DateSlot.vue')['default']
@@ -35,6 +36,7 @@ declare module '@vue/runtime-core' {
     ResponsiveNavLink: typeof import('./resources/js/Components/ResponsiveNavLink.vue')['default']
     TheDate: typeof import('./resources/js/Components/Yogas/TheDate.vue')['default']
     VerifyEmail: typeof import('./resources/js/Pages/Auth/VerifyEmail.vue')['default']
+    WaitingSlot: typeof import('./resources/js/Components/Yogas/WaitingSlot.vue')['default']
     Welcome: typeof import('./resources/js/Pages/Welcome.vue')['default']
   }
 }

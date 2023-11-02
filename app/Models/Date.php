@@ -26,7 +26,7 @@ class Date extends Model
      *
      * @var array
      */
-    protected $appends = ['has_free_seats', 'already_reserved', 'old', 'date_for_humans'];
+    protected $appends = ['has_free_seats', 'already_reserved','already_waiting', 'old', 'date_for_humans'];
 
     /**
      * The attributes that should be cast.
@@ -73,6 +73,19 @@ class Date extends Model
         );
     }
 
+    /**
+     * Interact with the user's first name.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function waiting(): Attribute
+    {
+        return Attribute::make(
+            fn ($value) => collect(json_decode($value))->map(fn ($place) => User::find($place)),
+            fn ($value) => json_encode(collect($value)->map(fn ($place) => $place ? $place->id : $place))
+        );
+    }
+
     /**    
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
@@ -92,6 +105,17 @@ class Date extends Model
     {
         return new Attribute(
             get: fn ($value, $attributes) => $this->places->contains('id', Auth::id())
+        );
+    }
+
+    /**     
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function alreadyWaiting(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value, $attributes) => $this->waiting->contains('id', Auth::id())
         );
     }
 
