@@ -24,17 +24,17 @@ export default defineConfig({
         }),
         vue({
             template: {
-                transformAssetUrls: {                    
+                transformAssetUrls: {
                     base: null,
                     includeAbsolute: false,
                 },
             },
         }),
         AutoImport({
-            imports: ['vue', 'pinia',            
+            imports: ['vue', 'pinia',
                 {
                     'axios': [['default', 'axios'],]
-                },                
+                },
                 { '@/stores/auth': [['default', 'piniaStore']] },],
             dts: true,
             eslintrc: {

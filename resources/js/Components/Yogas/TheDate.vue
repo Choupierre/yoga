@@ -28,7 +28,7 @@
                     </span>
                 </li>             
             </ul>
-            <button v-if="!date.date.has_free_seats && !date.date.already_reserved" type="button" class="buttonblue" @click="date.addWaiting()">
+            <button v-if="!date.date.has_free_seats && !date.date.already_reserved && !store.auth?.admin" type="button" class="buttonblue" @click="date.addWaiting()">
                 {{ date.date.already_waiting ? "Retirer" : "Liste d'attente" }} 
             </button>
         </div>
