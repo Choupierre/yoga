@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Mail\NewInsaUserWelcomeMail;
 use App\Mail\NewYogaUserWelcomeMail;
+use App\Mail\UserFromWaitingToPresent;
 use App\Models\Date;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -100,12 +101,21 @@ class UserController extends Controller
     public function destroy(User $user)
     {
 
-        foreach (Date::whereDate('date', '>', now()->toDateString())->get() as $date) {
-            $places = collect($date->places);
-            $places->transform(function ($placedUser, $key) use ($user) {
-                return ($placedUser && $placedUser['id'] === $user->id) ? null : $placedUser;
-            });
-            $date->places = $places;
+        foreach (Date::all() as $date) {
+            $places = $date->places;
+            $waiting = $date->waiting;
+
+            if ($places->firstWhere('id', $user->id)) {
+                $waitingUser = $waiting->shift();
+                $places->transform(function ($placedUser, $key) use ($user) {
+                    return ($placedUser && $placedUser['id'] === $user->id) ? null : $placedUser;
+                });
+                $date->places = $places;
+                if ($waitingUser)
+                    Mail::to($waitingUser)->send(new UserFromWaitingToPresent($waitingUser, $date));
+            }
+            
+            $date->waiting =  $waiting->filter(fn ($u) => $u->isNot($user));
             $date->save();
         }
         $user->delete();

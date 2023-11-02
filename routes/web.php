@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Auth::loginUsingId(1);
+if (App::isLocal())
+  Auth::loginUsingId(2);
 
 Route::get('/', HomeController::class)->middleware(['auth'])->name('home');
 

@@ -85,6 +85,7 @@ class DateController extends Controller
                 $places[$free] = Auth::user();
             }
         }
+        $date->places = $places;
     }
 
     /**
