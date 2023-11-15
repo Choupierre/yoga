@@ -23,7 +23,8 @@ class DateController extends Controller
         Date::create([
             'user_id' => Auth::id(),
             'date' => $request->date,
-            'places' => array_fill(0, $request->places, null)
+            'places' => array_fill(0, $request->places, null),
+            'waiting' => [],
         ]);
     }
 
