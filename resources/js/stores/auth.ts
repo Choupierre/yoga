@@ -1,5 +1,3 @@
-import { Date1 } from "./class";
-
 export const useAuthStore = defineStore("auth", () => {
 
     const auth = ref<UserElement>();

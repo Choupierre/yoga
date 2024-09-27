@@ -6,6 +6,7 @@ const formDate = reactive({
   date: undefined,
   places: auth.value?.config.slots,
 });
+
 const formDatesuccess = ref("");
 const formDateError = ref("");
 

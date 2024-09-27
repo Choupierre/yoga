@@ -1,26 +1,13 @@
 <script setup lang="ts">
-import { Date1, Place } from "@/stores/class";
-import { PropType } from "vue";
-
 const { auth } = storeToRefs(useAuthStore());
 
-const props = defineProps({
-    place: {
-        type: Object as PropType<Place>,
-        required: true,
-    },
-    date:{
-        type: Object as PropType<Date1>,
-            required: true,
-    }
-});
-const { place } = toRefs(props);
+const props = defineProps<{ place: Place, date: Date1 }>();
 
-function canReserveSeat(place: Place) {   
-    if (auth.value?.admin) return false; 
-    if (place.place && place.place?.id !== auth.value?.id) return false;  
-    if (place.place && place.place?.id === auth.value?.id) return true;  
-    if (props.date.places.map(p => p.place?.id).includes(auth.value?.id)) return false;   
+function canReserveSeat(place: Place) {
+    if (auth.value?.admin) return false;
+    if (place.place && place.place?.id !== auth.value?.id) return false;
+    if (place.place && place.place?.id === auth.value?.id) return true;
+    if (props.date.places.map(p => p.place?.id).includes(auth.value?.id)) return false;
     return !place.date.date.user.config.group && !place.date.date.old;
 }
 
@@ -32,21 +19,14 @@ function liClass(place: Place): string {
 </script>
 
 <template>
-    <li
-        class="flex space-x-3"
-        :class="liClass(place)"
-        @click="canReserveSeat(place) ? place.switchReservation() : null">
+    <li class="flex space-x-3" :class="liClass(place)" @click="canReserveSeat(place) ? place.switchReservation() : null">
         <CheckIcon />
-        <span
-            v-if="!place.date.date.user.config.group"
-            class="text-base font-normal leading-tight">
+        <span v-if="!place.date.date.user.config.group" class="text-base font-normal leading-tight">
             {{ place.hour() }}
         </span>
         <span class="text-base font-normal leading-tight">
             {{ place.place?.id ? place.place.name : "place libre" }}
         </span>
-        <BtnDeleteReservation
-            v-if="place.place?.id && auth?.admin"
-            @click.stop="place.deleteReservation()" />
+        <BtnDeleteReservation v-if="place.place?.id && auth?.admin" @click.stop="place.deleteReservation()" />
     </li>
 </template>

@@ -6,7 +6,9 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const Date1: typeof import('@/class/Date1')['Date1']
   const EffectScope: typeof import('vue')['EffectScope']
+  const Place: typeof import('@/class/Place')['Place']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const axios: typeof import('axios')['default']
   const computed: typeof import('vue')['computed']

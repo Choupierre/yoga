@@ -81,6 +81,8 @@
     "useId": true,
     "useModel": true,
     "useTemplateRef": true,
-    "useAuthStore": true
+    "useAuthStore": true,
+    "Date1": true,
+    "Place": true
   }
 }

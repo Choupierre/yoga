@@ -11,7 +11,7 @@ type UserElement = {
 
 type DateElement = {
     id: number;
-    places: Place[];
+    places: UserElement[];
     waiting: { id: number, name: string }[];
     date: string;
     date_for_humans: string;
@@ -24,3 +24,6 @@ type DateElement = {
     switchReservation: () => void;
     deleteDate: () => void;
 }
+
+type Place = import('./class/Place').Place
+type Date1 = import('./class/Date1').Date1

@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    App: typeof import('./resources/js/Pages/App.vue')['default']
     ApplicationLogo: typeof import('./resources/js/Components/ApplicationLogo.vue')['default']
     BreezeAuthenticatedLayout: typeof import('./resources/js/Layouts/BreezeAuthenticatedLayout.vue')['default']
     BtnDelete: typeof import('./resources/js/Components/Yogas/BtnDelete.vue')['default']

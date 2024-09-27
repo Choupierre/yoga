@@ -3,6 +3,9 @@ import BreezeDropdown from "@/Components/Dropdown.vue";
 import BreezeDropdownLink from "@/Components/DropdownLink.vue";
 import BreezeResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 
+import { useRoute } from 'ziggy-js';
+const route = useRoute();
+
 const { auth } = storeToRefs(useAuthStore());
 
 const showingNavigationDropdown = ref(false);
