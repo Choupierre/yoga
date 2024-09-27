@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Place } from "@/stores/class";
+import { Date1, Place } from "@/stores/class";
 import { PropType } from "vue";
 
 const store = piniaStore();
@@ -8,12 +8,18 @@ const props = defineProps({
         type: Object as PropType<Place>,
         required: true,
     },
+    date:{
+        type: Object as PropType<Date1>,
+            required: true,
+    }
 });
 const { place } = toRefs(props);
 
 function canReserveSeat(place: Place) {   
     if (store.auth?.admin) return false; 
-    if (place.place && place.place?.id !== store.auth?.id) return false;   
+    if (place.place && place.place?.id !== store.auth?.id) return false;  
+    if (place.place && place.place?.id === store.auth?.id) return true;  
+    if (props.date.places.map(p => p.place?.id).includes(store.auth?.id)) return false;   
     return !place.date.date.user.config.group && !place.date.date.old;
 }
 

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Mail\NewInsaUserWelcomeMail;
+use App\Mail\NewPiccoloUserWelcomeMail;
 use App\Mail\NewYogaUserWelcomeMail;
 use App\Mail\UserFromWaitingToPresent;
 use App\Models\Date;
@@ -21,9 +22,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-    }
+    public function index() {}
 
     /**
      * Show the form for creating a new resource.
@@ -48,7 +47,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'config' => ['mail' => true, 'mailNotified' => false, 'notify_all' => true],
+            'config' => ['group' => false, 'slots' => 5, 'display_teacher_name' => true, 'duration' => 60],
             'company_id' => Auth::user()->company_id,
             'password' => Hash::make('dsfgdsfgsfgfdsg'),
         ]);
@@ -56,6 +55,8 @@ class UserController extends Controller
             Mail::to($user)->send(new NewYogaUserWelcomeMail($user));
         if (config('app.name') === "Insa")
             Mail::to($user)->send(new NewInsaUserWelcomeMail($user));
+        if (config('app.name') === "Piccolo")
+            Mail::to($user)->send(new NewPiccoloUserWelcomeMail($user));
     }
 
     /**
@@ -114,8 +115,8 @@ class UserController extends Controller
                 if ($waitingUser)
                     Mail::to($waitingUser)->send(new UserFromWaitingToPresent($waitingUser, $date));
             }
-            
-            $date->waiting =  $waiting->filter(fn ($u) => $u->isNot($user));
+
+            $date->waiting =  $waiting->filter(fn($u) => $u->isNot($user));
             $date->save();
         }
         $user->delete();

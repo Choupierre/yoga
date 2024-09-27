@@ -54,7 +54,7 @@ class DateController extends Controller
     {
         $waiting = $date->waiting;
         if ($waiting->firstWhere('id', Auth::id()))
-            $waiting = $waiting->filter(fn ($user) => Auth::user()->isNot($user));
+            $waiting = $waiting->filter(fn($user) => Auth::user()->isNot($user));
         else
             $waiting->push(Auth::user());
         $date->waiting = $waiting;
@@ -75,13 +75,13 @@ class DateController extends Controller
         $waiting = $date->waiting;
         if ($places->firstWhere('id', Auth::id())) {
             $waitingUser = $waiting->shift();
-            $places->transform(fn ($user) => Auth::user()->is($user) ? $waitingUser : $user);
+            $places->transform(fn($user) => Auth::user()->is($user) ? $waitingUser : $user);
             if ($waitingUser) {
                 Mail::to($waitingUser)->send(new UserFromWaitingToPresent($waitingUser, $date));
                 $date->waiting = $waiting;
             }
         } else {
-            $free = $places->search(fn ($user) => !$user);
+            $free = $places->search(fn($user) => !$user);
             if ($free !== false) {
                 $places[$free] = Auth::user();
             }

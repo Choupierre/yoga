@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-if (App::isLocal())
-  Auth::loginUsingId(2);
+if (App::isLocal() && Schema::hasTable('users'))
+  Auth::loginUsingId(1);
 
 Route::get('/', HomeController::class)->middleware(['auth'])->name('home');
 

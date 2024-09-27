@@ -21,14 +21,12 @@ return new class extends Migration
             $table->string('name');
             $table->timestamps();
         });
-        Company::create(['name' => 'Yoga']);
-        Company::create(['name' => 'Insa']);
+      
 
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('company_id');
             $table->json('config')->nullable();
         });
-        User::query()->update(['company_id' => 1]);
     }
 
     /**

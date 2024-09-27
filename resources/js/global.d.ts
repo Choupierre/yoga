@@ -7,7 +7,7 @@ declare global {
         deleteUser: () => void;
         active: boolean;
         company: { name: string };
-        config: { group: boolean; slots: number; display_teacher_name: boolean };
+        config: { group: boolean; slots: number; display_teacher_name: boolean,duration:number };
     }
 
     interface DateElement {

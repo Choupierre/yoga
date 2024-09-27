@@ -37,8 +37,9 @@ export class Place {
     constructor(public date: Date1, public place: UserElement | null, public key: number) { }
 
     hour() {
+        const store = piniaStore();
         const date = new Date(this.date.date.date).getTime();
-        const dateSlot = new Date(date + 1000 * 60 * 30 * this.key);
+        const dateSlot = new Date(date + 1000 * 60 * (store.auth?.config.duration ?? 30) * this.key);
         return ("0" + dateSlot.getHours()).slice(-2) + "h" + ("0" + dateSlot.getMinutes()).slice(-2);
     }
 
