@@ -1,6 +1,6 @@
 <template>
     <div :class="date.date.old ? 'bg-gray-200' : 'bg-white'" class="relative p-4 w-full h-full rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 flex flex-col items-start">
-        <BtnDelete v-if="store.auth?.admin" class="absolute -top-2 -right-2" @click="deleteDate()" />
+        <BtnDelete v-if="auth?.admin" class="absolute -top-2 -right-2" @click="deleteDate()" />
         <h5 v-if="date.date.user.config.display_teacher_name" class="text-xl font-medium text-gray-500 dark:text-gray-400">
             {{ date.date.user.name }}
         </h5>
@@ -15,7 +15,7 @@
             <DateSlot v-for="(place, key) in date.places" :key="key" :date="date" :place="place" />
         </ul>
         <div v-if="!date.date.old && date.date.user.config.group">
-            <button v-if="(date.date.has_free_seats || date.date.already_reserved) && !store.auth?.admin" type="button" class="buttonblue" @click="date.switchReservation()">
+            <button v-if="(date.date.has_free_seats || date.date.already_reserved) && !auth?.admin" type="button" class="buttonblue" @click="date.switchReservation()">
                 {{ date.date.already_reserved ? "Annuler" : "Réserver" }}
             </button>           
             <h5 v-if="date.waiting.length" class="text-xl font-medium text-gray-500 dark:text-gray-400 mt-6">
@@ -28,7 +28,7 @@
                     </span>
                 </li>             
             </ul>
-            <button v-if="!date.date.has_free_seats && !date.date.already_reserved && !store.auth?.admin" type="button" class="buttonblue" @click="date.addWaiting()">
+            <button v-if="!date.date.has_free_seats && !date.date.already_reserved && !auth?.admin" type="button" class="buttonblue" @click="date.addWaiting()">
                 {{ date.date.already_waiting ? "Retirer" : "Liste d'attente" }} 
             </button>
         </div>
@@ -39,7 +39,8 @@
 import { PropType } from "vue";
 import { Date1 } from "@/stores/class";
 
-const store = piniaStore();
+const { init } = useAuthStore();
+const { auth } = storeToRefs(useAuthStore());
 
 const props = defineProps({
     date: {
@@ -52,7 +53,7 @@ const { date } = toRefs(props);
 async function deleteDate() {
     if (window.confirm("voulez vous supprimer cette date?")) {
         await axios.delete("/api/dates/" + date.value.date.id);
-        store.init();
+        init();
     }
 }
 

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-const store = piniaStore();
+const { init } = useAuthStore();
+const { auth } = storeToRefs(useAuthStore());
+
 const formDate = reactive({
   date: undefined,
-  places: store.auth?.config.slots,
+  places: auth.value?.config.slots,
 });
 const formDatesuccess = ref("");
 const formDateError = ref("");
@@ -13,7 +15,7 @@ function addDate() {
     .then(() => {
       formDatesuccess.value = "nouvelle date ajoutée";
       formDate.date = undefined;
-      store.init();
+      init();
       setTimeout(() => {
         formDatesuccess.value = "";
       }, 3000);
@@ -38,7 +40,7 @@ function addDate() {
       <input id="date" v-model="formDate.date" type="datetime-local" class="input1" placeholder="name@flowbite.com" required>
     </div>
     <div class="mb-6">
-      <label v-if="!store.auth?.config.group" for="number" class="label1">Nombre de créneaux (durée {{ store.auth?.config.duration }} minutes)
+      <label v-if="!auth?.config.group" for="number" class="label1">Nombre de créneaux (durée {{ auth?.config.duration }} minutes)
       </label>
       <label v-else for="number" class="label1">nombre de participants :
       </label>

@@ -7,10 +7,9 @@ export class Date1 {
     }
 
     public mutate() {
-        console.log('rrr')
         this.places = [];
         this.waiting = [];
-        this.date.places.forEach((place, key) => {            
+        this.date.places.forEach((place, key) => {
             this.places[key] = new Place(this, place, key);
         });
         this.date.waiting.forEach((place, key) => {
@@ -37,9 +36,10 @@ export class Place {
     constructor(public date: Date1, public place: UserElement | null, public key: number) { }
 
     hour() {
-        const store = piniaStore();
+        const { auth } = storeToRefs(useAuthStore());
+
         const date = new Date(this.date.date.date).getTime();
-        const dateSlot = new Date(date + 1000 * 60 * (store.auth?.config.duration ?? 30) * this.key);
+        const dateSlot = new Date(date + 1000 * 60 * (auth.value?.config.duration ?? 30) * this.key);
         return ("0" + dateSlot.getHours()).slice(-2) + "h" + ("0" + dateSlot.getMinutes()).slice(-2);
     }
 

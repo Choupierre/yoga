@@ -10,7 +10,7 @@ export default defineConfig({
         alias: {
             '@': path.resolve(__dirname, 'resources/js'),
             'Yogas': path.resolve(__dirname, 'resources/js/Components/Yogas'),
-            'Ziggy': path.resolve("vendor/tightenco/ziggy/dist"),
+            'ziggy-js': path.resolve('vendor/tightenco/ziggy'),
         },
     },
     plugins: [
@@ -35,7 +35,7 @@ export default defineConfig({
                 {
                     'axios': [['default', 'axios'],]
                 },
-                { '@/stores/auth': [['default', 'piniaStore']] },],
+                { '@/stores/auth': ['useAuthStore'] },],
             dts: true,
             eslintrc: {
                 enabled: true,

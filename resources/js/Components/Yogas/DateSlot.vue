@@ -2,7 +2,8 @@
 import { Date1, Place } from "@/stores/class";
 import { PropType } from "vue";
 
-const store = piniaStore();
+const { auth } = storeToRefs(useAuthStore());
+
 const props = defineProps({
     place: {
         type: Object as PropType<Place>,
@@ -16,10 +17,10 @@ const props = defineProps({
 const { place } = toRefs(props);
 
 function canReserveSeat(place: Place) {   
-    if (store.auth?.admin) return false; 
-    if (place.place && place.place?.id !== store.auth?.id) return false;  
-    if (place.place && place.place?.id === store.auth?.id) return true;  
-    if (props.date.places.map(p => p.place?.id).includes(store.auth?.id)) return false;   
+    if (auth.value?.admin) return false; 
+    if (place.place && place.place?.id !== auth.value?.id) return false;  
+    if (place.place && place.place?.id === auth.value?.id) return true;  
+    if (props.date.places.map(p => p.place?.id).includes(auth.value?.id)) return false;   
     return !place.date.date.user.config.group && !place.date.date.old;
 }
 
@@ -45,7 +46,7 @@ function liClass(place: Place): string {
             {{ place.place?.id ? place.place.name : "place libre" }}
         </span>
         <BtnDeleteReservation
-            v-if="place.place?.id && store.auth?.admin"
+            v-if="place.place?.id && auth?.admin"
             @click.stop="place.deleteReservation()" />
     </li>
 </template>

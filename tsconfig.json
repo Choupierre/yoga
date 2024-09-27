@@ -16,7 +16,8 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["resources/js/*"],
-            "Yogas/*": ["resources/js/Components/Yogas/*"],            
+            "Yogas/*": ["resources/js/Components/Yogas/*"],    
+            "ziggy-js": ["./vendor/tightenco/ziggy"]        
         },
         "lib": [
             "esnext",
@@ -29,7 +30,7 @@
         "./*.ts", 
         "./resources/**/*.ts",
         "./resources/**/*.tsx",
-        "./resources/**/*.vue", "resources/js/app.ts",
+        "./resources/**/*.vue", "resources/js/app.ts", "vite.config.mts",
     ],
     "exclude": [
         "node_modules"

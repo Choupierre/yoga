@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { AxiosError, AxiosResponse } from "axios";
-import { UserElement } from "@/global";
-const store = piniaStore();
+
+const { init } = useAuthStore();
+const { users } = storeToRefs(useAuthStore());
+
 const formUser = {
     name: "",
     email: "",
@@ -14,7 +16,7 @@ function userCreated(res: AxiosResponse) {
     successMessage.value = "nouvel élève ajouté";
     formUser.name = "";
     formUser.email = "";
-    store.init();
+    init();
     setTimeout(() => {
         successMessage.value = "";
     }, 3000);
@@ -36,7 +38,7 @@ function addUser() {
 async function deleteUser(user: UserElement) {
     if (window.confirm("voulez vous supprimer cet élève?")) {
         await axios.delete("/api/users/" + user.id);
-        store.init();
+        init();
     }
 }
 </script>
@@ -94,7 +96,7 @@ async function deleteUser(user: UserElement) {
         </div>
         <div class="mt-4">
             <span
-                v-for="user in store.users"
+                v-for="user in users"
                 id="badge-dismiss-green"
                 :key="user.id"
                 :class="user.active ? 'text-green-800 bg-green-100 dark:bg-green-200 dark:text-green-800' : 'text-red-800 bg-red-100 dark:bg-red-200 dark:text-red-800'"
