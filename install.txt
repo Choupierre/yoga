@@ -1,0 +1,50 @@
+cd /var/www/html/piccolo.musicaltools.eu/
+
+php artisan down
+git pull
+composer install --optimize-autoloader --no-dev
+npm ci
+php artisan migrate
+php artisan optimize:clear
+php artisan optimize
+npm run build
+php artisan up
+
+
+php vendor/bin/phpstan clear-result-cache && php vendor/bin/phpstan analyse --memory-limit=2G
+./vendor/bin/pint
+php artisan ide-helper:generate
+php artisan ide-helper:models -N
+
+[program:orchestra-mail]
+process_name=%(program_name)
+command=php /var/www/html/onl.musicaltools.eu/artisan queue:work --queue=mail --sleep=3 --tries=3 --backoff=10
+autostart=true
+autorestart=true
+user=choup
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/www/html/onl.musicaltools.eu/storage/worker.log
+stopwaitsecs=3600
+
+[program:orchestra-database]
+process_name=%(program_name)
+command=php /var/www/html/onl.musicaltools.eu/artisan queue:work --queue=database --sleep=3 --tries=3 --backoff=10
+autostart=true
+autorestart=true
+user=choup
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/www/html/onl.musicaltools.eu/storage/worker.log
+stopwaitsecs=3600
+
+[program:orchestra-slack]
+process_name=%(program_name)
+command=php /var/www/html/onl.musicaltools.eu/artisan queue:work --queue=slack --sleep=3 --tries=3 --backoff=10
+autostart=true
+autorestart=true
+user=choup
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/www/html/onl.musicaltools.eu/storage/worker.log
+stopwaitsecs=3600

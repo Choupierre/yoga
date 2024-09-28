@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Date;
 use App\Http\Requests\StoreDateRequest;
 use App\Mail\UserFromWaitingToPresent;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -32,6 +33,7 @@ class DateController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  Date  $date
+     * 
      * @return Date
      */
     public function switch(Date $date): Date
@@ -40,6 +42,29 @@ class DateController extends Controller
             $this->reserveOrCancelDate($date);
         else
             $this->reserveOrCancelDateSlot($date->places);
+        $date->save();
+        return $date;
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  Date  $date
+     * @param  User  $user
+     * 
+     * @return Date
+     */
+    public function change(Date $date, User $user): Date
+    {
+        $places = $date->places;
+
+        foreach ($places as $key => $place) {
+            if (request()->key === $key)
+                $places[$key] = $user;
+            else if ($user->is($place))
+                $places[$key] = null;
+        }
+
         $date->save();
         return $date;
     }

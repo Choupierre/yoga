@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { auth } = storeToRefs(useAuthStore());
+const { auth, users } = storeToRefs(useAuthStore());
 
 const props = defineProps<{ place: Place, date: Date1 }>();
 
@@ -16,17 +16,27 @@ function liClass(place: Place): string {
     classArray += canReserveSeat(place) ? " hover:cursor-pointer hover:bg-blue-100" : "";
     return classArray;
 }
+
+const student = ref<number>()
+watchEffect(() => { student.value = props.place.place?.id })
+watch(student, () => {
+    if (student.value)
+    props.place.changeReservation(student.value)
+})
 </script>
 
 <template>
-    <li class="flex space-x-3" :class="liClass(place)" @click="canReserveSeat(place) ? place.switchReservation() : null">
+    <li class="flex items-center space-x-3" :class="liClass(place)" @click="canReserveSeat(place) ? place.switchReservation() : null">
         <CheckIcon />
         <span v-if="!place.date.date.user.config.group" class="text-base font-normal leading-tight">
             {{ place.hour() }}
         </span>
-        <span class="text-base font-normal leading-tight">
+        <span class="text-base font-normal leading-tight" v-if="!auth?.admin">
             {{ place.place?.id ? place.place.name : "place libre" }}
         </span>
+        <select v-model="student" v-else class="input1">
+            <option v-for="student in users" :value="student.id">{{ student.name }}</option>
+        </select>
         <BtnDeleteReservation v-if="place.place?.id && auth?.admin" @click.stop="place.deleteReservation()" />
     </li>
 </template>

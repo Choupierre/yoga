@@ -1,5 +1,5 @@
 export class Place {
-    
+
     constructor(public date: Date1, public place: UserElement | null, public key: number) { }
 
     hour() {
@@ -18,6 +18,11 @@ export class Place {
     }
     async switchReservation() {
         this.date.date = await axios.post("/api/dates/switch/" + this.date.date.id, { key: this.key }).then((res) => res.data as DateElement);
+        this.date.mutate();
+    }
+
+    async changeReservation(userId: number | undefined) {
+        this.date.date = await axios.post(`/api/dates/change/${this.date.date.id}/${userId}`, { key: this.key }).then((res) => res.data as DateElement);
         this.date.mutate();
     }
 }
