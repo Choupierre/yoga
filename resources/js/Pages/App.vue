@@ -11,12 +11,14 @@ onMounted(async () => {
 <template>
     <BreezeAuthenticatedLayout>
         <div class="container mx-auto">
-            <div v-if="auth?.admin" class="grid grid-cols-1 md:grid-cols-2 gap-4 m-4">
-                <NewDate />
-                <NewUser />
-            </div>
-            <template v-if="dateComing.length">
+            <template v-if="auth?.admin">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 m-4">
+                    <NewDate />
+                    <NewUser />
+                </div>
                 <hr class="my-6" />
+            </template>
+            <template v-if="dateComing.length">
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 m-4">
                     <div v-for="date in dateComing">
                         <TheDate :date="date" />

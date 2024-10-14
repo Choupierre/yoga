@@ -21,7 +21,6 @@ declare module 'vue' {
     DropdownLink: typeof import('./resources/js/Components/DropdownLink.vue')['default']
     ForgotPassword: typeof import('./resources/js/Pages/Auth/ForgotPassword.vue')['default']
     Guest: typeof import('./resources/js/Layouts/Guest.vue')['default']
-    HomePage: typeof import('./resources/js/Pages/HomePage.vue')['default']
     Input: typeof import('./resources/js/Components/Input.vue')['default']
     InputError: typeof import('./resources/js/Components/InputError.vue')['default']
     Label: typeof import('./resources/js/Components/Label.vue')['default']
@@ -33,6 +32,5 @@ declare module 'vue' {
     ResetPassword: typeof import('./resources/js/Pages/Auth/ResetPassword.vue')['default']
     ResponsiveNavLink: typeof import('./resources/js/Components/ResponsiveNavLink.vue')['default']
     TheDate: typeof import('./resources/js/Components/Yogas/TheDate.vue')['default']
-    VerifyEmail: typeof import('./resources/js/Pages/Auth/VerifyEmail.vue')['default']
   }
 }

@@ -21,7 +21,7 @@ const student = ref<number>()
 watchEffect(() => { student.value = props.place.place?.id })
 watch(student, () => {
     if (student.value)
-    props.place.changeReservation(student.value)
+        props.place.changeReservation(student.value)
 })
 </script>
 
