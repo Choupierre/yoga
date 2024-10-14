@@ -30,12 +30,12 @@ watch(student, () => {
         <CheckIcon />
         <span v-if="!place.date.date.user.config.group" class="text-base font-normal leading-tight">
             {{ place.hour() }}
-        </span>
+        </span>     
         <span class="text-base font-normal leading-tight" v-if="!auth?.admin">
             {{ place.place?.id ? place.place.name : "place libre" }}
-        </span>
-        <select v-model="student" v-else class="input1">
-            <option v-for="student in users" :value="student.id">{{ student.name }}</option>
+        </span>     
+        <select v-model="student" v-else class="input1">            
+            <option v-for="student2 in users.filter(u => date.date.user.config.group ? student===u.id || !date.places.map(p => p.place?.id).includes(u.id) : true)" :value="student2.id">{{ student2.name }}</option>
         </select>
         <BtnDeleteReservation v-if="place.place?.id && auth?.admin" @click.stop="place.deleteReservation()" />
     </li>
