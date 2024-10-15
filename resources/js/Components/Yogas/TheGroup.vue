@@ -1,50 +1,56 @@
 <script setup lang="ts">
-import { AxiosError, AxiosResponse } from "axios";
-
-const { company } = storeToRefs(useAuthStore());
+const { company, modal } = storeToRefs(useAuthStore());
 const { init } = useAuthStore();
 
-const newGroup = reactive({
-    name: "",
-    ids: [],
-});
+const newGroup = reactive({ name: "", ids: [], });
 
-const successMessage = ref("");
 const errorMessage = ref("");
 
-function userCreated(res: AxiosResponse) {
-    console.log(res);
-    successMessage.value = "nouveau groupe ajouté";
-    newGroup.name = "";
-    setTimeout(() => {
-        successMessage.value = "";
-    }, 3000);
+async function addUser() {
+    if (company.value!.groups === null)
+        company.value!.groups = []
+    company.value!.groups.push(newGroup)
+    modal.value = true
+
+    try {
+        await axios.put("/api/companies/" + company.value!.id, company.value);
+        await init()
+        newGroup.name = "";
+    } catch (error: any) {
+        errorMessage.value = error?.response?.data?.message as string;
+    }
+
+    modal.value = false
 }
 
-function userCreatedError(err: AxiosError<{ message: string }>) {
-    errorMessage.value = err?.response?.data?.message as string;
-    setTimeout(() => {
-        errorMessage.value = "";
-    }, 3000);
+async function addToGroup(index: number, id: UserId) {
+    company.value!.groups[index].ids.push(id)
+    modal.value = true
+
+    try {
+        await axios.put("/api/companies/" + company.value!.id, company.value);
+        await init()
+        newGroup.name = "";
+    } catch (error: any) {
+        errorMessage.value = error?.response?.data?.message as string;
+    }
+
+    modal.value = false
 }
 
-function addUser() {
-    if (!company.value)
-        return
-    if (company.value.groups === null)
-        company.value.groups = []
-    company.value.groups.push(newGroup)
-    axios.put("/api/companies/" + company.value.id, company.value).then(userCreated).catch(userCreatedError).then(init);
-}
+async function deleteFromGroup(index: number, id: UserId) {
+    company.value!.groups[index].ids = company.value!.groups[index].ids.filter(userId => userId !== id)
+    modal.value = true
 
-function addToGroup(index: number, id: UserId) {
-    company.value!.groups![index].ids.push(id)
-    axios.put("/api/users/" + company.value!.id, company.value);
-}
+    try {
+        await axios.put("/api/companies/" + company.value!.id, company.value);
+        await init()
+        newGroup.name = "";
+    } catch (error: any) {
+        errorMessage.value = error?.response?.data?.message as string;
+    }
 
-function deleteFromGroup(index: number, id: UserId) {
-    company.value!.groups![index].ids = company.value!.groups![index].ids.filter(userId => userId !== id)
-    axios.put("/api/users/" + company.value!.id, company.value);
+    modal.value = false
 }
 </script>
 
@@ -59,9 +65,6 @@ function deleteFromGroup(index: number, id: UserId) {
         <button type="submit" class="buttonblue" @click="addUser">
             Ajouter
         </button>
-        <div v-if="successMessage" class="p-3 mt-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
-            <span class="font-medium">{{ successMessage }}</span>
-        </div>
         <div v-if="errorMessage" class="p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
             <span class="font-medium">{{ errorMessage }}</span>
         </div>

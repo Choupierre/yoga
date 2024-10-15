@@ -1,46 +1,40 @@
 <script setup lang="ts">
-import { AxiosError, AxiosResponse } from "axios";
-
 const { init } = useAuthStore();
-const { users } = storeToRefs(useAuthStore());
+const { users, modal } = storeToRefs(useAuthStore());
 
-const formUser = reactive({
-    name: "",
-    email: "",
-});
+const formUser = reactive({ name: "", email: "", });
 
-const successMessage = ref("");
 const errorMessage = ref("");
 
-function userCreated(res: AxiosResponse) {
-    console.log(res);
-    successMessage.value = "nouvel élève ajouté";
-    formUser.name = "";
-    formUser.email = "";
-    init();
-    setTimeout(() => {
-        successMessage.value = "";
-    }, 3000);
-}
+async function addUser() {
+    modal.value = true
 
-function userCreatedError(err: AxiosError<{ message: string }>) {
-    errorMessage.value = err?.response?.data?.message as string;
-    formUser.name = "";
-    formUser.email = "";
-    setTimeout(() => {
-        errorMessage.value = "";
-    }, 3000);
-}
+    try {
+        await axios.post("/api/users", formUser)
+        await init()
+        formUser.name = "";
+        formUser.email = "";
+    } catch (error: any) {
+        errorMessage.value = error?.response?.data?.message as string;
+    }
 
-function addUser() {
-    axios.post("/api/users", formUser).then(userCreated).catch(userCreatedError);
+    modal.value = false
 }
 
 async function deleteUser(user: UserElement) {
-    if (window.confirm("voulez vous supprimer cet élève?")) {
+    if (!window.confirm("voulez vous désactiver cet élève?"))
+        return
+
+    modal.value = true
+
+    try {
         await axios.delete("/api/users/" + user.id);
-        init();
+        await init()
+    } catch (error: any) {
+        errorMessage.value = error?.response?.data?.message as string;
     }
+
+    modal.value = false
 }
 
 function activeClass(user: UserElement) {
@@ -51,11 +45,11 @@ function activeClass(user: UserElement) {
     return 'text-gray-800 bg-gray-100 dark:bg-gray-200 dark:text-gray-800'
 }
 
-const sortUsers = computed(() => users.value.sort((a, b) => { 
-    if (a.active && b.active && a.activated !== b.activated) 
-        return a.activated ? 1 : -1; 
-     
-    return b.active ? 1 : -1;; 
+const sortUsers = computed(() => users.value.sort((a, b) => {
+    if (a.active && b.active && a.activated !== b.activated)
+        return a.activated ? 1 : -1;
+
+    return b.active ? 1 : -1;;
 }))
 </script>
 
@@ -77,9 +71,6 @@ const sortUsers = computed(() => users.value.sort((a, b) => {
         <button type="submit" class="buttonblue" @click="addUser">
             Ajouter
         </button>
-        <div v-if="successMessage" class="p-3 mt-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
-            <span class="font-medium">{{ successMessage }}</span>
-        </div>
         <div v-if="errorMessage" class="p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
             <span class="font-medium">{{ errorMessage }}</span>
         </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { auth, users } = storeToRefs(useAuthStore());
+const { auth, users, modal } = storeToRefs(useAuthStore());
 const { init } = useAuthStore();
 
 const props = defineProps<{ place: UserId | null, date: DateElement, placeKey: number }>();
@@ -36,20 +36,39 @@ const hour = computed(() => {
 
 
 async function changeReservation(userId: UserId) {
-    await axios.post(`/api/dates/change/${props.date.id}/${userId}`, { key: props.placeKey });
-    init()
+    modal.value = true
+
+    try {
+        await axios.post(`/api/dates/change/${props.date.id}/${userId}`, { key: props.placeKey });
+        await init()
+    } catch (error: any) { }
+
+    modal.value = false
 }
 
 async function deleteReservation() {
-    if (window.confirm("voulez vous supprimer cette réservation?")) {
+    if (!window.confirm("voulez vous supprimer cette réservation?"))
+        return
+
+    modal.value = true
+
+    try {
         await axios.put("/api/dates/" + props.date.id, { key: props.placeKey });
-        init()
-    }
+        await init()
+    } catch (error: any) { }
+
+    modal.value = false
 }
 
 async function switchReservation() {
-    await axios.post("/api/dates/switch/" + props.date.id, { key: props.placeKey });
-    init()
+    modal.value = true
+
+    try {
+        await axios.post("/api/dates/switch/" + props.date.id, { key: props.placeKey });
+        await init()
+    } catch (error: any) { }
+
+    modal.value = false
 }
 
 const filteredUsers = computed(() => users.value.filter(u => props.date.user.config.group ? student.value === u.id || !props.date.places.includes(u.id) : true))

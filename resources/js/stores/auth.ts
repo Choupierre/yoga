@@ -8,6 +8,8 @@ export const useAuthStore = defineStore("auth", () => {
 
     const users = ref<UserElement[]>([]);
 
+    const modal = ref(false)
+
     async function init() {
         return axios.get<{ auth: UserElement; company: Company; dates: DateElement[]; users: UserElement[] }>("/api/store").then((res) => {
             auth.value = res.data.auth;
@@ -28,5 +30,6 @@ export const useAuthStore = defineStore("auth", () => {
         users,
         dateComing,
         dateOld,
+        modal
     };
 });

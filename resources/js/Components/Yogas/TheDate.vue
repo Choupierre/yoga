@@ -1,24 +1,43 @@
 <script setup lang="ts">
 const { init } = useAuthStore();
-const { auth, users } = storeToRefs(useAuthStore());
+const { auth, users, modal } = storeToRefs(useAuthStore());
 
 const props = defineProps<{ date: DateElement }>();
 
 async function deleteDate() {
-    if (window.confirm("voulez vous supprimer cette date?")) {
+    if (!window.confirm("voulez vous supprimer cette date?"))
+        return
+
+    modal.value = true
+
+    try {
         await axios.delete("/api/dates/" + props.date.id);
-        init();
-    }
+        await init()
+    } catch (error: any) { }
+
+    modal.value = false
 }
 
 async function switchReservation() {
-    await axios.post("/api/dates/switch/" + props.date.id);
-    init()
+    modal.value = true
+
+    try {
+        await axios.post("/api/dates/switch/" + props.date.id);
+        await init()
+    } catch (error: any) { }
+
+    modal.value = false
 }
 
 async function addWaiting() {
-    await axios.post("/api/dates/waiting/" + props.date.id);
-    init()
+    modal.value = true
+
+    try {
+        await axios.post("/api/dates/waiting/" + props.date.id);
+        await init()
+    } catch (error: any) { }
+
+    modal.value = false
 }
 </script>
 
@@ -56,7 +75,7 @@ async function addWaiting() {
                         </span>
                     </li>
                 </ul>
-            </template>   
+            </template>
             <button v-if="!date.has_free_seats && !date.already_reserved && !auth?.admin" type="button" class="buttonblue" @click="addWaiting()">
                 {{ date.already_waiting ? "Retirer de la liste" : "Liste d'attente" }}
             </button>
