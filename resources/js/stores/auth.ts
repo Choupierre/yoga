@@ -2,24 +2,28 @@ export const useAuthStore = defineStore("auth", () => {
 
     const auth = ref<UserElement>();
 
-    const dates = ref<Date1[]>([]);
+    const company = ref<Company>();
+
+    const dates = ref<DateElement[]>([]);
 
     const users = ref<UserElement[]>([]);
 
     async function init() {
-        return axios.get("/api/store").then((res: { data: { auth: UserElement; dates: DateElement[]; users: UserElement[] } }) => {
+        return axios.get<{ auth: UserElement; company: Company; dates: DateElement[]; users: UserElement[] }>("/api/store").then((res) => {
             auth.value = res.data.auth;
-            dates.value = res.data.dates.map((date) => new Date1(date));
+            company.value = res.data.company;
+            dates.value = res.data.dates
             users.value = res.data.users;
         });
     }
 
-    const dateComing = computed(() => dates.value.filter((date) => !date.date.old));
-    const dateOld = computed(() => dates.value.filter((date) => date.date.old).reverse());
+    const dateComing = computed(() => dates.value.filter((date) => !date.old));
+    const dateOld = computed(() => dates.value.filter((date) => date.old).reverse());
 
     return {
         init,
         auth,
+        company,
         dates,
         users,
         dateComing,

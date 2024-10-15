@@ -8,7 +8,6 @@ export {}
 declare global {
   const Date1: typeof import('@/class/Date1')['Date1']
   const EffectScope: typeof import('vue')['EffectScope']
-  const Place: typeof import('@/class/Place')['Place']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const axios: typeof import('axios')['default']
   const computed: typeof import('vue')['computed']
@@ -49,7 +48,6 @@ declare global {
   const onUnmounted: typeof import('vue')['onUnmounted']
   const onUpdated: typeof import('vue')['onUpdated']
   const onWatcherCleanup: typeof import('vue')['onWatcherCleanup']
-  const piniaStore: typeof import('@/stores/auth')['default']
   const provide: typeof import('vue')['provide']
   const reactive: typeof import('vue')['reactive']
   const readonly: typeof import('vue')['readonly']

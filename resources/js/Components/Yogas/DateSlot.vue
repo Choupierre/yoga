@@ -1,42 +1,72 @@
 <script setup lang="ts">
 const { auth, users } = storeToRefs(useAuthStore());
+const { init } = useAuthStore();
 
-const props = defineProps<{ place: Place, date: Date1 }>();
+const props = defineProps<{ place: UserId | null, date: DateElement, placeKey: number }>();
 
-function canReserveSeat(place: Place) {
+const canReserveSeat = computed(() => {
     if (auth.value?.admin) return false;
-    if (place.place && place.place?.id !== auth.value?.id) return false;
-    if (place.place && place.place?.id === auth.value?.id) return true;
-    if (props.date.places.map(p => p.place?.id).includes(auth.value?.id)) return false;
-    return !place.date.date.user.config.group && !place.date.date.old;
-}
-
-function liClass(place: Place): string {
-    let classArray: string = place.place?.id ? "text-blue-600 dark:text-blue-500" : "text-gray-400 dark:text-gray-500";
-    classArray += canReserveSeat(place) ? " hover:cursor-pointer hover:bg-blue-100" : "";
-    return classArray;
-}
-
-const student = ref<number>()
-watchEffect(() => { student.value = props.place.place?.id })
-watch(student, () => {
-    if (student.value)
-        props.place.changeReservation(student.value)
+    if (props.place && props.place !== auth.value?.id) return false;
+    if (props.place && props.place === auth.value?.id) return true;
+    if (props.date.places.includes(auth.value!.id)) return false;
+    return !props.date.user.config.group && !props.date.old;
 })
+
+const liClass = computed(() => {
+    let classArray: string = "text-gray-400 dark:text-gray-500"
+    const user = users.value.find(u => u.id === props.place)
+    if (user)
+        classArray = user.active ? "text-blue-600 dark:text-blue-500" : "text-red-600 dark:text-red-500"
+    classArray += canReserveSeat.value ? " hover:cursor-pointer hover:bg-blue-100" : "";
+    return classArray;
+})
+
+const student = ref(props.place)
+watchEffect(() => { student.value = props.place })
+watch(student, () => {
+    if (student.value && student.value !== props.place)
+        changeReservation(student.value)
+})
+
+const hour = computed(() => {
+    const date = new Date(props.date.date).getTime();
+    const dateSlot = new Date(date + 1000 * 60 * (auth.value?.config.duration ?? 30) * props.placeKey);
+    return ("0" + dateSlot.getHours()).slice(-2) + "h" + ("0" + dateSlot.getMinutes()).slice(-2);
+})
+
+
+async function changeReservation(userId: UserId) {
+    await axios.post(`/api/dates/change/${props.date.id}/${userId}`, { key: props.placeKey });
+    init()
+}
+
+async function deleteReservation() {
+    if (window.confirm("voulez vous supprimer cette réservation?")) {
+        await axios.put("/api/dates/" + props.date.id, { key: props.placeKey });
+        init()
+    }
+}
+
+async function switchReservation() {
+    await axios.post("/api/dates/switch/" + props.date.id, { key: props.placeKey });
+    init()
+}
+
+const filteredUsers = computed(() => users.value.filter(u => props.date.user.config.group ? student.value === u.id || !props.date.places.includes(u.id) : true))
 </script>
 
 <template>
-    <li class="flex items-center space-x-3" :class="liClass(place)" @click="canReserveSeat(place) ? place.switchReservation() : null">
+    <li class="flex items-center space-x-3" :class="liClass" @click="canReserveSeat ? switchReservation() : null">
         <CheckIcon />
-        <span v-if="!place.date.date.user.config.group" class="text-base font-normal leading-tight">
-            {{ place.hour() }}
-        </span>     
+        <span v-if="!date.user.config.group" class="text-base font-normal leading-tight">
+            {{ hour }}
+        </span>
         <span class="text-base font-normal leading-tight" v-if="!auth?.admin">
-            {{ place.place?.id ? place.place.name : "place libre" }}
-        </span>     
-        <select v-model="student" v-else class="input1">            
-            <option v-for="student2 in users.filter(u => date.date.user.config.group ? student===u.id || !date.places.map(p => p.place?.id).includes(u.id) : true)" :value="student2.id">{{ student2.name }}</option>
+            {{ place ? users.find(u => u.id === place)?.name : "place libre" }}
+        </span>
+        <select v-model="student" v-else class="input1" :key="student ?? 0">
+            <option v-for="student2 in filteredUsers" :value="student2.id">{{ student2.name }}</option>
         </select>
-        <BtnDeleteReservation v-if="place.place?.id && auth?.admin" @click.stop="place.deleteReservation()" />
+        <BtnDeleteReservation v-if="place && auth?.admin" @click.stop="deleteReservation()" />
     </li>
 </template>

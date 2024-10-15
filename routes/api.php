@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DateController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
@@ -27,4 +28,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/dates/change/{date}/{user}', [DateController::class,'change']);
     Route::post('/dates/waiting/{date}', [DateController::class,'waiting']);
     Route::apiResource('users', UserController::class);
+    Route::apiResource('companies', CompanyController::class);
 });

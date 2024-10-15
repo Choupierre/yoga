@@ -6,7 +6,7 @@ import BreezeResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import { useRoute } from 'ziggy-js';
 const route = useRoute();
 
-const { auth } = storeToRefs(useAuthStore());
+const { auth,company } = storeToRefs(useAuthStore());
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -21,7 +21,7 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                {{ auth?.company.name }}
+                                {{ company?.name }}
                             </div>
                         </div>
 

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CheckWaitings;
 use App\Models\Date;
 use App\Http\Requests\StoreDateRequest;
 use App\Mail\UserFromWaitingToPresent;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -21,12 +23,20 @@ class DateController extends Controller
      */
     public function store(StoreDateRequest $request): void
     {
-        Date::create([
-            'user_id' => Auth::id(),
-            'date' => $request->date,
-            'places' => array_fill(0, $request->places, null),
-            'waiting' => [],
-        ]);
+        $dateDate = new Carbon($request->date);
+        $dateUntil = $request->until ? new Carbon($request->until) : new Carbon($request->date);
+        $repeat =  $dateDate->diffInWeeks($dateUntil);
+        $places = collect($request->group ?? [])->pad($request->places, null)->take($request->places);
+
+        for ($i = 0; $i <= $repeat; $i++) {
+            Date::create([
+                'user_id' => Auth::id(),
+                'date' => $dateDate,
+                'places' =>  $places,
+                'waiting' => [],
+            ]);
+            $dateDate->addWeek();
+        }
     }
 
     /**
@@ -41,41 +51,10 @@ class DateController extends Controller
         if (request()->key === null)
             $this->reserveOrCancelDate($date);
         else
-            $this->reserveOrCancelDateSlot($date->places);
+            $this->reserveOrCancelDateSlot($date);
 
-        $this->checkWaiting($date);
-        $date->save();
-
+        CheckWaitings::check($date);
         return $date;
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Date  $date
-     * 
-     * @return Date
-     */
-    public function checkWaiting(Date $date): void
-    {
-        $places = $date->places;
-        $waiting = $date->waiting;
-
-        foreach ($places as $key => $place) {
-            if ($place !== null)
-                continue;
-
-            $waitingUser = $waiting->shift();
-            if ($waitingUser === null)
-                continue;
-
-            $places[$key] = $waitingUser;
-            Mail::to($waitingUser)->send(new UserFromWaitingToPresent($waitingUser, $date));
-            $date->waiting = $waiting;
-        }
-
-        $date->waiting = $waiting;
-        $date->places = $places;
     }
 
     /**
@@ -92,13 +71,13 @@ class DateController extends Controller
 
         foreach ($places as $key => $place) {
             if (request()->key === $key)
-                $places[$key] = $user;
-            else if ($user->is($place))
+                $places[$key] = $user->id;
+            else if ($user->id === $place)
                 $places[$key] = null;
         }
+        $date->update(['places' => $places]);
 
-        $this->checkWaiting($date);
-        $date->save();
+        CheckWaitings::check($date);
         return $date;
     }
 
@@ -111,13 +90,15 @@ class DateController extends Controller
     public function waiting(Date $date): Date
     {
         $waiting = $date->waiting;
-        if ($waiting->firstWhere('id', Auth::id()))
-            $waiting = $waiting->filter(fn($user) => Auth::user()->isNot($user));
+
+        if ($waiting->contains(Auth::id()))
+            $waiting = $waiting->filter(fn($userId) => Auth::id() !== $userId);
         else
-            $waiting->push(Auth::user());
-        $date->waiting = $waiting;
-        $this->checkWaiting($date);
-        $date->save();
+            $waiting->push(Auth::id());
+
+        $date->update(['waiting' => $waiting]);
+
+        CheckWaitings::check($date);
         return $date;
     }
 
@@ -133,12 +114,12 @@ class DateController extends Controller
         $places = $date->places;
         $free = $places->search(null, true);
 
-        if ($places->firstWhere('id', Auth::id()))
-            $places->transform(fn($user) => Auth::user()->is($user) ? null : $user);
+        if ($places->contains(Auth::id()))
+            $places->transform(fn($userId) => Auth::id() === $userId ? null : $userId);
         else if ($free !== false)
-            $places[$free] = Auth::user();
+            $places[$free] = Auth::id();
 
-        $date->places = $places;
+        $date->update(['places' => $places]);
     }
 
     /**
@@ -147,12 +128,16 @@ class DateController extends Controller
      * @param  Collection<User|null>  $places
      * 
      */
-    private function reserveOrCancelDateSlot($places): void
+    private function reserveOrCancelDateSlot(Date $date): void
     {
-        if ($places[request()->key] && $places[request()->key]['id'] == Auth::id())
+        $places = $date->places;
+
+        if ($places[request()->key] === Auth::id())
             $places[request()->key] = null;
         elseif ($places[request()->key] === null)
-            $places[request()->key] = Auth::user();
+            $places[request()->key] = Auth::id();
+
+        $date->update(['places' => $places]);
     }
 
 
@@ -166,9 +151,12 @@ class DateController extends Controller
     public function update(Date $date): Date
     {
         $this->authorize($date);
-        $date->places[request()->key] = null;
-        $this->checkWaiting($date);
-        $date->save();
+        $places = $date->places;
+        $places[request()->key] = null;
+
+        $date->update(['places' => $places]);
+
+        CheckWaitings::check($date);
         return $date;
     }
 

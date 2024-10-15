@@ -42,6 +42,21 @@ async function deleteUser(user: UserElement) {
         init();
     }
 }
+
+function activeClass(user: UserElement) {
+    if (user.active && user.activated)
+        return 'text-green-800 bg-green-100 dark:bg-green-200 dark:text-green-800'
+    if (!user.active)
+        return 'text-red-800 bg-red-100 dark:bg-red-200 dark:text-red-800'
+    return 'text-gray-800 bg-gray-100 dark:bg-gray-200 dark:text-gray-800'
+}
+
+const sortUsers = computed(() => users.value.sort((a, b) => { 
+    if (a.active && b.active && a.activated !== b.activated) 
+        return a.activated ? 1 : -1; 
+     
+    return b.active ? 1 : -1;; 
+}))
 </script>
 
 <template>
@@ -69,8 +84,7 @@ async function deleteUser(user: UserElement) {
             <span class="font-medium">{{ errorMessage }}</span>
         </div>
         <div class="mt-4">
-            <span v-for="user in users" id="badge-dismiss-green" :key="user.id" :class="user.active ? 'text-green-800 bg-green-100 dark:bg-green-200 dark:text-green-800' : 'text-red-800 bg-red-100 dark:bg-red-200 dark:text-red-800'"
-                class="inline-flex items-center py-1 px-2 mr-2 mb-2 text-sm font-medium rounded">
+            <span v-for="user in sortUsers" id="badge-dismiss-green" :key="user.id" :class="activeClass(user)" class="inline-flex items-center py-1 px-2 mr-2 mb-2 text-sm font-medium rounded">
                 {{ user.name }}
                 <button type="button" class="inline-flex items-center p-0.5 ml-2 text-sm bg-transparent rounded-sm hover:bg-gray-200 hover:text-green-900 dark:hover:bg-gray-300" data-dismiss-target="#badge-dismiss-green" aria-label="Remove" @click="deleteUser(user)">
                     <svg aria-hidden="true" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

@@ -8,7 +8,6 @@ use App\Models\Company;
 use App\Models\Date;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -20,8 +19,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $companie = Company::create(['name' => 'Yoga']);
-
+        $companie = Company::create(['name' => 'Yoga', 'groups' => []]);
 
         $kissline = User::create([
             'company_id' => $companie->id,
@@ -35,9 +33,9 @@ class DatabaseSeeder extends Seeder
         $users = User::factory(10)->create();
         $waitingUsers = User::factory(2)->create();
 
-        for ($i = -5; $i < 10; $i++) {        
+        /*     for ($i = -5; $i < 10; $i++) {        
             $randomWaitings = $waitingUsers->random(rand(0, 2));
             Date::create(['date' => now()->addWeeks($i)->hour(12)->minute(15), 'user_id' => $kissline->id, 'places' => $users, 'waiting' => $randomWaitings]);
-        }
+        } */
     }
 }

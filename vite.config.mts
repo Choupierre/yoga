@@ -36,9 +36,7 @@ export default defineConfig({
                     'axios': [['default', 'axios'],]
                 },
                 {
-                     '@/stores/auth': ['useAuthStore'] ,
-                     '@/class/Date1': ['Date1'] ,
-                     '@/class/Place': ['Place'] 
+                    '@/stores/auth': ['useAuthStore']
                 },],
             dts: true,
             eslintrc: {

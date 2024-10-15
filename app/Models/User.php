@@ -23,7 +23,8 @@ class User extends Authenticatable
         'password',
         'admin',
         'company_id',
-        'config'
+        'config',
+        'active'
     ];
 
     /**
@@ -44,7 +45,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'admin' => 'boolean',
-        'config' => 'array'
+        'config' => 'object',
+        'active' => 'boolean'
     ];
 
     /**
@@ -52,14 +54,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $appends = ['active'];
-
-    /**
-    * The relationships that should always be loaded.
-    *
-    * @var array
-    */
-   protected $with = ['company'];
+    protected $appends = ['activated'];
 
     public function dates()
     {
@@ -75,10 +70,10 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */
-    protected function active(): Attribute
+    protected function activated(): Attribute
     {
         return new Attribute(
-            get: fn ($value, $attributes) => !!$this->remember_token
+            get: fn($value, $attributes) => !!$this->remember_token
         );
     }
 }

@@ -18,9 +18,10 @@ class StoreController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $dates = Date::whereHas('user', fn ($query) => $query->where('company_id', Auth::user()->company_id))->orderBy('date')->get();      
+        $company = Company::find(Auth::user()->company_id);
+        $dates = Date::whereHas('user', fn($query) => $query->where('company_id', Auth::user()->company_id))->with('user')->orderBy('date')->get();
         $users = User::where('company_id', Auth::user()->company_id)->where('admin', false)->get();
 
-        return ['dates' => $dates, 'users' => $users, 'auth' => Auth::user()->load('company')];
+        return ['company' => $company, 'dates' => $dates, 'users' => $users, 'auth' => Auth::user()];
     }
 }

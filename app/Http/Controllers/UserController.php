@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CheckWaitings;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
 use App\Mail\NewInsaUserWelcomeMail;
 use App\Mail\NewPiccoloUserWelcomeMail;
 use App\Mail\NewYogaUserWelcomeMail;
@@ -17,22 +17,6 @@ use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index() {}
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -71,20 +55,8 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(User $user)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateUserRequest  $request
+     * 
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
@@ -101,24 +73,13 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $user->company->update(['groups' => $user->company->groups->filter(fn($id) => $id !== $user->id)]);
 
         foreach (Date::all() as $date) {
-            $places = $date->places;
-            $waiting = $date->waiting;
-
-            if ($places->firstWhere('id', $user->id)) {
-                $waitingUser = $waiting->shift();
-                $places->transform(function ($placedUser, $key) use ($user) {
-                    return ($placedUser && $placedUser['id'] === $user->id) ? null : $placedUser;
-                });
-                $date->places = $places;
-                if ($waitingUser)
-                    Mail::to($waitingUser)->send(new UserFromWaitingToPresent($waitingUser, $date));
-            }
-
-            $date->waiting =  $waiting->filter(fn($u) => $u->isNot($user));
-            $date->save();
+            if ($date->waiting->contains($user->id))
+                $date->update(['waiting' => $date->waiting->filter(fn($userId) => $user->id !== $userId)]);
         }
-        $user->delete();
+
+        $user->update(['active' => false]);
     }
 }

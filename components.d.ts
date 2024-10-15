@@ -20,6 +20,7 @@ declare module 'vue' {
     Dropdown: typeof import('./resources/js/Components/Dropdown.vue')['default']
     DropdownLink: typeof import('./resources/js/Components/DropdownLink.vue')['default']
     ForgotPassword: typeof import('./resources/js/Pages/Auth/ForgotPassword.vue')['default']
+    GroupSlot: typeof import('./resources/js/Components/Yogas/GroupSlot.vue')['default']
     Guest: typeof import('./resources/js/Layouts/Guest.vue')['default']
     Input: typeof import('./resources/js/Components/Input.vue')['default']
     InputError: typeof import('./resources/js/Components/InputError.vue')['default']
@@ -32,5 +33,6 @@ declare module 'vue' {
     ResetPassword: typeof import('./resources/js/Pages/Auth/ResetPassword.vue')['default']
     ResponsiveNavLink: typeof import('./resources/js/Components/ResponsiveNavLink.vue')['default']
     TheDate: typeof import('./resources/js/Components/Yogas/TheDate.vue')['default']
+    TheGroup: typeof import('./resources/js/Components/Yogas/TheGroup.vue')['default']
   }
 }

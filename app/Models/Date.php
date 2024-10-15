@@ -34,15 +34,10 @@ class Date extends Model
      * @var array
      */
     protected $casts = [
-        'date' => 'datetime'      
+        'date' => 'datetime',
+        'places' => 'collection',
+        'waiting' => 'collection',
     ];
-
-    /**
-    * The relationships that should always be loaded.
-    *
-    * @var array
-    */
-   protected $with = ['user'];
 
     public function user()
     {
@@ -57,32 +52,6 @@ class Date extends Model
     {
         return new Attribute(
             get: fn () => $this->date->translatedFormat('D d F Y à H\hi')
-        );
-    }
-
-    /**
-     * Interact with the user's first name.
-     *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute
-     */
-    protected function places(): Attribute
-    {
-        return Attribute::make(
-            fn ($value) => collect(json_decode($value))->map(fn ($place) => User::find($place)),
-            fn ($value) => json_encode(collect($value)->map(fn ($place) => $place ? $place->id : $place))
-        );
-    }
-
-    /**
-     * Interact with the user's first name.
-     *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute
-     */
-    protected function waiting(): Attribute
-    {
-        return Attribute::make(
-            fn ($value) => collect(json_decode($value))->map(fn ($place) => User::find($place)),
-            fn ($value) => json_encode(collect($value)->map(fn ($place) => $place ? $place->id : $place))
         );
     }
 
@@ -104,7 +73,7 @@ class Date extends Model
     protected function alreadyReserved(): Attribute
     {
         return new Attribute(
-            get: fn ($value, $attributes) => $this->places->contains('id', Auth::id())
+            get: fn ($value, $attributes) => $this->places->contains(Auth::id())
         );
     }
 
@@ -115,7 +84,7 @@ class Date extends Model
     protected function alreadyWaiting(): Attribute
     {
         return new Attribute(
-            get: fn ($value, $attributes) => $this->waiting->contains('id', Auth::id())
+            get: fn ($value, $attributes) => $this->waiting->contains(Auth::id())
         );
     }
 
