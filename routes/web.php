@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Schema;
 */
 
 if (App::isLocal() && Schema::hasTable('users'))
-  Auth::loginUsingId(1);
+  Auth::loginUsingId(2);
 
 Route::get('/', HomeController::class)->middleware(['auth'])->name('home');
 

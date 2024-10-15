@@ -83,6 +83,9 @@
     "useTemplateRef": true,
     "useAuthStore": true,
     "Date1": true,
-    "Place": true
+    "Place": true,
+    "DirectiveBinding": true,
+    "MaybeRef": true,
+    "MaybeRefOrGetter": true
   }
 }

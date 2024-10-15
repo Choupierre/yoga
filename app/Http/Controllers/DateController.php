@@ -90,9 +90,9 @@ class DateController extends Controller
     public function waiting(Date $date): Date
     {
         $waiting = $date->waiting;
-
+    
         if ($waiting->contains(Auth::id()))
-            $waiting = $waiting->filter(fn($userId) => Auth::id() !== $userId);
+            $waiting = $waiting->filter(fn($userId) => Auth::id() !== $userId)->values();
         else
             $waiting->push(Auth::id());
 

@@ -73,13 +73,18 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->company->update(['groups' => $user->company->groups->filter(fn($id) => $id !== $user->id)]);
+        $user->update(['active' => !$user->active]);
+        if ($user->active)
+            return;
+      
+        
+        $user->company->update(['groups' => $user->company->groups->filter(fn($userId) => $userId !== $user->id)->values()]);
 
         foreach (Date::all() as $date) {
-            if ($date->waiting->contains($user->id))
-                $date->update(['waiting' => $date->waiting->filter(fn($userId) => $user->id !== $userId)]);
+            if ($date->waiting->contains($user->id)){              
+                $date->update(['waiting' => $date->waiting->filter(fn($userId) => $userId !== $user->id)->values()]);
+            }
+               
         }
-
-        $user->update(['active' => false]);
     }
 }
