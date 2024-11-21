@@ -3,7 +3,7 @@ import '../css/app.postcss';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { ZiggyVue } from 'ziggy-js';
-import { Ziggy } from  './ziggy';
+import { Ziggy } from  './ziggy.js';
 
 const pinia = createPinia()
 
