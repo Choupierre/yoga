@@ -70,6 +70,27 @@ declare module 'ziggy-js' {
             "binding": "id"
         }
     ],
+    "companies.index": [],
+    "companies.store": [],
+    "companies.show": [
+        {
+            "name": "company",
+            "required": true
+        }
+    ],
+    "companies.update": [
+        {
+            "name": "company",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "companies.destroy": [
+        {
+            "name": "company",
+            "required": true
+        }
+    ],
     "home": [],
     "register": [],
     "login": [],

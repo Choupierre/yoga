@@ -5,6 +5,7 @@ git pull
 composer install --optimize-autoloader --no-dev
 npm ci
 php artisan migrate
+php artisan ziggy:generate --types
 php artisan optimize:clear
 php artisan optimize
 npm run build
