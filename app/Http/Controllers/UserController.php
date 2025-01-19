@@ -33,9 +33,9 @@ class UserController extends Controller
             'email' => $validated['email'],
             'config' => ['group' => false, 'slots' => 5, 'display_teacher_name' => true, 'duration' => 60],
             'company_id' => Auth::user()->company_id,
-            'password' => Hash::make('dsfgdsfgsfgfdsg'),
+            'password' => Hash::make('azerty'),
         ]);
-        if (config('app.name') === "Yoga")
+        if (config('app.name') === "Yoga" || config('app.name') === "Orezen")
             Mail::to($user)->send(new NewYogaUserWelcomeMail($user));
         if (config('app.name') === "Insa")
             Mail::to($user)->send(new NewInsaUserWelcomeMail($user));
@@ -56,7 +56,7 @@ class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * 
+     *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
@@ -76,15 +76,15 @@ class UserController extends Controller
         $user->update(['active' => !$user->active]);
         if ($user->active)
             return;
-      
-        
+
+
         $user->company->update(['groups' => $user->company->groups->filter(fn($userId) => $userId !== $user->id)->values()]);
 
         foreach (Date::all() as $date) {
-            if ($date->waiting->contains($user->id)){              
+            if ($date->waiting->contains($user->id)){
                 $date->update(['waiting' => $date->waiting->filter(fn($userId) => $userId !== $user->id)->values()]);
             }
-               
+
         }
     }
 }

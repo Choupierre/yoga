@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         $kissline = User::create([
             'company_id' => $companie->id,
             'password' => Hash::make('azerty'),
-            'email' => 'kissline@example.com',
+            'email' => 'kissline@orezenyoga.com',
             'name' => 'Kissline',
             'config' => ['group' => true, 'slots' => 10, 'display_teacher_name' => true, 'duration' => 60],
             'admin' => true,
@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
         $users = User::factory(10)->create();
         $waitingUsers = User::factory(2)->create();
 
-        /*     for ($i = -5; $i < 10; $i++) {        
+        /*     for ($i = -5; $i < 10; $i++) {
             $randomWaitings = $waitingUsers->random(rand(0, 2));
             Date::create(['date' => now()->addWeeks($i)->hour(12)->minute(15), 'user_id' => $kissline->id, 'places' => $users, 'waiting' => $randomWaitings]);
         } */
