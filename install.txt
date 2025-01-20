@@ -2,7 +2,7 @@ cd /var/www/html/piccolo.musicaltools.eu/
 
 php artisan down
 git pull
-composer install --optimize-autoloader --no-dev
+composer install --optimize-autoloader
 npm ci
 php artisan migrate
 php artisan ziggy:generate --types

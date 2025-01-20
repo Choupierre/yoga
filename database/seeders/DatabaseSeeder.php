@@ -25,13 +25,13 @@ class DatabaseSeeder extends Seeder
             'company_id' => $companie->id,
             'password' => Hash::make('azerty'),
             'email' => 'kissline@orezenyoga.com',
-            'name' => 'Kissline',
+            'name' => 'Kissline Mai',
             'config' => ['group' => true, 'slots' => 10, 'display_teacher_name' => true, 'duration' => 60],
             'admin' => true,
         ]);
 
-        $users = User::factory(10)->create();
-        $waitingUsers = User::factory(2)->create();
+       /*  $users = User::factory(10)->create();
+        $waitingUsers = User::factory(2)->create(); */
 
         /*     for ($i = -5; $i < 10; $i++) {
             $randomWaitings = $waitingUsers->random(rand(0, 2));
