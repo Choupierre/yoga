@@ -3,7 +3,7 @@
 const { init } = useAuthStore();
 const { auth, dateComing, dateOld, modal } = storeToRefs(useAuthStore());
 
-const adminPanel = ref(true)
+const adminPanel = ref(false)
 const newDate = ref(true)
 
 onMounted(async () => { await init(); });

@@ -58,7 +58,10 @@ async function addWaiting() {
         </div>
         <!-- List -->
         <ul role="list" class="space-y-2">
-            <DateSlot v-for="(place, key) in date.places" :place-key="key" :date="date" :place="place" />
+            <template v-for="(place, key) in date.places" >
+                <DateSlot :place-key="key" :date="date" :place="place" v-if="auth?.admin" />
+                <DateSlot :place-key="key" :date="date" :place="place" v-else-if="auth?.id === place" />
+            </template>
         </ul>
         <template v-if="!date.old && date.user.config.group">
             <button v-if="(date.has_free_seats || date.already_reserved) && !auth?.admin" type="button" class="buttonblue" @click="switchReservation()">
