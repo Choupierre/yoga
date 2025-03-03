@@ -17,11 +17,11 @@ type UserElement = {
     id: UserId;
     name: string;
     email: string;
-    admin: boolean;    
+    admin: boolean;
     active: boolean;
     activated: boolean;
     company: { name: string };
-    config: { group: boolean; slots: number; display_teacher_name: boolean, duration: number };
+    config: { group: boolean; slots: number; display_teacher_name: boolean, duration: number,canSeeOther?:boolean };
 }
 
 type DateElement = {

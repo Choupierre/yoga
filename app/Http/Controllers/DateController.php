@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use App\Actions\CheckWaitings;
 use App\Models\Date;
 use App\Http\Requests\StoreDateRequest;
-use App\Mail\UserFromWaitingToPresent;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 class DateController extends Controller
 {
@@ -19,7 +17,7 @@ class DateController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreDateRequest  $request
-     * 
+     *
      */
     public function store(StoreDateRequest $request): void
     {
@@ -43,7 +41,7 @@ class DateController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  Date  $date
-     * 
+     *
      * @return Date
      */
     public function switch(Date $date): Date
@@ -62,7 +60,7 @@ class DateController extends Controller
      *
      * @param  Date  $date
      * @param  User  $user
-     * 
+     *
      * @return Date
      */
     public function change(Date $date, User $user): Date
@@ -72,7 +70,7 @@ class DateController extends Controller
         foreach ($places as $key => $place) {
             if (request()->key === $key)
                 $places[$key] = $user->id;
-            else if ($user->id === $place)
+            else if ($user->id === $place && $date->user->config?->group)
                 $places[$key] = null;
         }
         $date->update(['places' => $places]);
@@ -90,7 +88,7 @@ class DateController extends Controller
     public function waiting(Date $date): Date
     {
         $waiting = $date->waiting;
-    
+
         if ($waiting->contains(Auth::id()))
             $waiting = $waiting->filter(fn($userId) => Auth::id() !== $userId)->values();
         else
@@ -107,7 +105,7 @@ class DateController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  Collection<User|null>  $places
-     * 
+     *
      */
     private function reserveOrCancelDate(Date $date): void
     {
@@ -126,7 +124,7 @@ class DateController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  Collection<User|null>  $places
-     * 
+     *
      */
     private function reserveOrCancelDateSlot(Date $date): void
     {
@@ -144,7 +142,7 @@ class DateController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *     
+     *
      * @param  Date $date
      * @return Date
      */
@@ -164,7 +162,7 @@ class DateController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  Date $date
-     * 
+     *
      */
     public function destroy(Date $date): void
     {

@@ -43,7 +43,7 @@ async function addDate() {
       <label v-else for="number" class="label1">nombre de participants</label>
       <input id="number" v-model="formDate.places" type="number" class="input1" min="1" max="10" required>
     </div>
-    <div class="mb-6" v-if="company?.groups.length">
+    <div class="mb-6" v-if="company?.groups?.length">
       <label for="number" class="label1">Groupes</label>
       <select class="input1 mb-6" v-model="formDate.group">
         <option v-for="group in company?.groups" :value="group.ids">{{ group.name }}</option>

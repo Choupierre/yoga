@@ -15,8 +15,9 @@ const canReserveSeat = computed(() => {
 const liClass = computed(() => {
     let classArray: string = "text-gray-400 dark:text-gray-500"
     const user = users.value.find(u => u.id === props.place)
+    console.log(user?.active)
     if (user)
-        classArray = user.active ? "text-blue-600 dark:text-blue-500" : "text-red-600 dark:text-red-500"
+        classArray = user.active ? "text-blue-600 dark:text-blue-500" : "text-black dark:text-black-500"
     //classArray += canReserveSeat.value ? " hover:cursor-pointer hover:bg-blue-100" : "";
     return classArray;
 })
@@ -30,7 +31,7 @@ watch(student, () => {
 
 const hour = computed(() => {
     const date = new Date(props.date.date).getTime();
-    const dateSlot = new Date(date + 1000 * 60 * (auth.value?.config.duration ?? 30) * props.placeKey);
+    const dateSlot = new Date(date + 1000 * 60 * (props.date.user.config.duration ?? 30) * props.placeKey);
     return ("0" + dateSlot.getHours()).slice(-2) + "h" + ("0" + dateSlot.getMinutes()).slice(-2);
 })
 
@@ -47,7 +48,7 @@ async function changeReservation(userId: UserId) {
 }
 
 async function deleteReservation() {
-    if (!window.confirm("voulez vous supprimer cette réservation?"))
+    if (!window.confirm("Voulez vous supprimer cette réservation?"))
         return
 
     modal.value = true
@@ -80,13 +81,16 @@ const filteredUsers = computed(() => users.value.filter(u => props.date.user.con
         <span v-if="!date.user.config.group" class="text-base font-normal leading-tight">
             {{ hour }}
         </span>
-        <span class="text-base font-normal leading-tight grow" v-if="!auth?.admin">
-            {{ place ? users.find(u => u.id === place)?.name : "place libre" }}
+        <span class="text-base font-normal leading-tight grow" v-if="!auth?.admin && place">
+            {{users.find(u => u.id === place)?.name}}
         </span>
+        <button  class="buttonblue" v-else-if="!auth?.admin && !place" @click="switchReservation">
+            Place libre
+        </button>
         <select v-model="student" v-else class="input1" :key="student ?? 0">
             <option v-for="student2 in filteredUsers" :value="student2.id">{{ student2.name }}</option>
         </select>
         <BtnDeleteReservation class="ml-auto" v-if="place && auth?.admin" @click.stop="deleteReservation()" />
-        <BtnDeleteReservation class="ml-auto" v-if="place===auth?.id" @click.stop="switchReservation()" />
+        <BtnDeleteReservation class="ml-auto" v-if="place === auth?.id" @click.stop="switchReservation()" />
     </li>
 </template>
