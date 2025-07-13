@@ -65,7 +65,7 @@ async function addWaiting() {
     <!-- List -->
     <ul role="list" class="space-y-2">
       <template v-for="(place, key) in date.places">
-        <DateSlot :place-key="key" :date="date" :place="place" v-if="auth?.admin" />
+        <DateSlot :place-key="key" :date="date" :place="place" v-if="auth?.admin || date.user.config.canSeeOther" />
         <DateSlot :place-key="key" :date="date" :place="place" v-else-if="auth?.id === place || date.user.config.canSeeOther" />
       </template>
     </ul>
